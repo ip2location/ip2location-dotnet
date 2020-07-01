@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>IP2Location</RootNamespace>
+    <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
+    <AssemblyName>IP2Location</AssemblyName>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>IP2Location.IPGeolocation</PackageId>
+    <Version>8.4.0</Version>
+    <Authors>IP2Location.com</Authors>
+    <Company>IP2Location.com</Company>
+    <Product>IP2Location Geolocation .NET Component</Product>
+    <Description>Discover your visitors’ geolocation information such as country, region, city, latitude &amp; longitude, ZIP codes, time zone and more from an IP address. It support both the IPv4 and IPv6 address. Below are the complete geolocation information that you can query using this component.
+
+* Country
+* Region
+* City
+* Latitude &amp; Longitude
+* Time zone
+* ZIP code
+* ISP
+* Domain
+* Netspeed
+* Area code
+* Weather information
+* Mobile information
+* Elevation
+* Usage Type
+
+This component works together with IP2Location BIN data file. You can download the free BIN data file at https://lite.ip2location.com or a commercial BIN data (high accuracy) at https://www.ip2location.com.
+</Description>
+    <Copyright>Copyright 2020 IP2Location.com</Copyright>
+    <PackageProjectUrl>https://www.ip2location.com/development-libraries/ip2location/nuget</PackageProjectUrl>
+    <PackageIcon>ipl-logo-square-128.png</PackageIcon>
+    <PackageLicenseFile></PackageLicenseFile>
+    <PackageTags>ip2location .net ip geolocation</PackageTags>
+    <PackageReleaseNotes>License key no longer required.</PackageReleaseNotes>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>IP2LocationComponent.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="License.txt" />
+    <None Remove="License.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="ipl-logo-square-128.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>
