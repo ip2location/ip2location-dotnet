@@ -951,13 +951,16 @@ Public NotInheritable Class Component
 
     ' Description: Write any errors to log
     Private Sub ErrLog(ByVal strMessage As String)
-        SyncLock _LockErrLog
-            Dim fs As FileStream = New FileStream(System.AppDomain.CurrentDomain.BaseDirectory & "errLog.txt", FileMode.Append)
-            Dim objWriter As StreamWriter = New StreamWriter(fs)
-            objWriter.WriteLine(Now & "," & strMessage)
-            objWriter.Close()
-            fs.Close()
-        End SyncLock
+        Try
+            SyncLock _LockErrLog
+                Dim fs As FileStream = New FileStream(System.AppDomain.CurrentDomain.BaseDirectory & "errLog.txt", FileMode.Append)
+                Dim objWriter As StreamWriter = New StreamWriter(fs)
+                objWriter.WriteLine(Now & "," & strMessage)
+                objWriter.Close()
+                fs.Close()
+            End SyncLock
+        Catch
+        End Try
     End Sub
 
     ' Description: Initialize
