@@ -183,6 +183,14 @@ Public NotInheritable Class Component
         End Set
     End Property
 
+    ' Description: Set the parameters and perform BIN pre-loading
+    Public Sub Open(ByVal DBPath As String, Optional ByVal UseMMF As Boolean = False)
+        IPDatabasePath = DBPath
+        UseMemoryMappedFile = UseMMF
+
+        LoadBIN()
+    End Sub
+
     ' Description: Create memory mapped file
     Private Sub CreateMemoryMappedFile()
         'Using MyBIN instead of Global\MyBIN is coz the newer OSes don't grant permission to create global shared memory object
