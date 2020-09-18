@@ -23,7 +23,9 @@ Below are the methods supported in this class.
 
 |Method Name|Description|
 |---|---|
+|Open(ByVal DBPath As String, Optional ByVal UseMMF As Boolean = False)|Initialize component and preload BIN file.|
 |IPQuery(ByVal _IPAddress As String)|Query IP address. This method returns results in IP2Location.IPResult object.|
+|Close()|Destroy memory accessors & memory mapped file (only use in specific cases, otherwise don't use).|
 
 ## Result fields
 Below are the result fields.
@@ -73,8 +75,9 @@ Dim oIP2Location As New IP2Location.Component
 Try
 	Dim strIPAddress = "8.8.8.8"
 	If strIPAddress.Trim <> "" Then
-		oIP2Location.IPDatabasePath = "C:\myfolder\IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ZIPCODE-TIMEZONE-ISP-DOMAIN-NETSPEED-AREACODE-WEATHER-MOBILE-ELEVATION-USAGETYPE.BIN"
-		' oIP2Location.UseMemoryMappedFile = True ' uncomment this line if you want to use MemoryMappedFile.
+		' oIP2Location.IPDatabasePath = "C:\myfolder\IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ZIPCODE-TIMEZONE-ISP-DOMAIN-NETSPEED-AREACODE-WEATHER-MOBILE-ELEVATION-USAGETYPE.BIN"
+		' oIP2Location.UseMemoryMappedFile = True
+		oIP2Location.Open("C:\myfolder\IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ZIPCODE-TIMEZONE-ISP-DOMAIN-NETSPEED-AREACODE-WEATHER-MOBILE-ELEVATION-USAGETYPE.BIN", True)
 		oIPResult = oIP2Location.IPQuery(strIPAddress)
 		Select Case oIPResult.Status
 			Case "OK"
@@ -112,6 +115,7 @@ Try
 Catch ex As Exception
 	Console.WriteLine(ex.Message)
 Finally
+	oIP2Location.Close()
 	oIPResult = Nothing
 	oIP2Location = Nothing
 End Try
