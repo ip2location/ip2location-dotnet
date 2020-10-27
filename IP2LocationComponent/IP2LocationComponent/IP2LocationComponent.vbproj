@@ -6,7 +6,7 @@
     <AssemblyName>IP2Location</AssemblyName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>IP2Location.IPGeolocation</PackageId>
-    <Version>8.5.0</Version>
+    <Version>8.6.0</Version>
     <Authors>IP2Location.com</Authors>
     <Company>IP2Location.com</Company>
     <Product>IP2Location Geolocation .NET Component</Product>
@@ -28,13 +28,14 @@
 * Usage Type
 
 This component works together with IP2Location BIN data file. You can download the free BIN data file at https://lite.ip2location.com or a commercial BIN data (high accuracy) at https://www.ip2location.com.
-</Description>
+
+As an alternative, you can also call the IP2Location Web Service using an API key. If you don't have an API key, you can subscribe for one at https://www.ip2location.com/web-service/ip2location to get started.</Description>
     <Copyright>Copyright 2020 IP2Location.com</Copyright>
     <PackageProjectUrl>https://www.ip2location.com/development-libraries/ip2location/nuget</PackageProjectUrl>
     <PackageIcon>ipl-logo-square-128.png</PackageIcon>
     <PackageLicenseFile></PackageLicenseFile>
     <PackageTags>ip2location .net ip geolocation</PackageTags>
-    <PackageReleaseNotes>Added open sub to set params and perform preloading of BIN file.</PackageReleaseNotes>
+    <PackageReleaseNotes>Added support for calling the IP2Location Web Service</PackageReleaseNotes>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>IP2LocationComponent.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
@@ -51,6 +52,10 @@ This component works together with IP2Location BIN data file. You can download t
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
 </Project>
