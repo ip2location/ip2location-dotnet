@@ -138,6 +138,7 @@ Below are the methods supported in this class.
 |Open(ByVal APIKey As String, ByVal Package As String, ByVal Optional UseSSL As Boolean = True)|Initialize component.|
 |IPQuery(ByVal IP As String, ByVal Optional Language As String = "en")|Query IP address. This method returns a JObject.|
 |IPQuery(ByVal IP As String, ByVal AddOns() As String, ByVal Optional Language As String = "en")|Query IP address and Addons. This method returns a JObject.|
+|GetCredit()|This method returns the web service credit balance in a JObject.|
 
 Below are the Addons supported in this class.
 
