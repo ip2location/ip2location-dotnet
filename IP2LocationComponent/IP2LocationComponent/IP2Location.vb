@@ -328,134 +328,136 @@ Public NotInheritable Class Component
                 If _DBFilePath <> "" Then
                     CreateMemoryMappedFile()
 
-                    ' below use temp accessor as we only need once to read meta data (use this even when in filestream mode)
-                    Using _MetaAccessor As MemoryMappedViewAccessor = _MMF.CreateViewAccessor(0, 64, MemoryMappedFileAccess.Read) ' 64 bytes header
-                        _MetaData = New MetaData
-                        With _MetaData
-                            .DBType = _MetaAccessor.ReadByte(0)
-                            .DBColumn = _MetaAccessor.ReadByte(1)
-                            .DBYear = _MetaAccessor.ReadByte(2)
-                            .DBMonth = _MetaAccessor.ReadByte(3)
-                            .DBDay = _MetaAccessor.ReadByte(4)
-                            .DBCount = _MetaAccessor.ReadInt32(5) '4 bytes
-                            .BaseAddr = _MetaAccessor.ReadInt32(9) '4 bytes
-                            .DBCountIPv6 = _MetaAccessor.ReadInt32(13) '4 bytes
-                            .BaseAddrIPv6 = _MetaAccessor.ReadInt32(17) '4 bytes
-                            .IndexBaseAddr = _MetaAccessor.ReadInt32(21) '4 bytes
-                            .IndexBaseAddrIPv6 = _MetaAccessor.ReadInt32(25) '4 bytes
+                    If _MMF IsNot Nothing Then ' file either couldn't be read or path incorrect
+                        ' below use temp accessor as we only need once to read meta data (use this even when in filestream mode)
+                        Using _MetaAccessor As MemoryMappedViewAccessor = _MMF.CreateViewAccessor(0, 64, MemoryMappedFileAccess.Read) ' 64 bytes header
+                            _MetaData = New MetaData
+                            With _MetaData
+                                .DBType = _MetaAccessor.ReadByte(0)
+                                .DBColumn = _MetaAccessor.ReadByte(1)
+                                .DBYear = _MetaAccessor.ReadByte(2)
+                                .DBMonth = _MetaAccessor.ReadByte(3)
+                                .DBDay = _MetaAccessor.ReadByte(4)
+                                .DBCount = _MetaAccessor.ReadInt32(5) '4 bytes
+                                .BaseAddr = _MetaAccessor.ReadInt32(9) '4 bytes
+                                .DBCountIPv6 = _MetaAccessor.ReadInt32(13) '4 bytes
+                                .BaseAddrIPv6 = _MetaAccessor.ReadInt32(17) '4 bytes
+                                .IndexBaseAddr = _MetaAccessor.ReadInt32(21) '4 bytes
+                                .IndexBaseAddrIPv6 = _MetaAccessor.ReadInt32(25) '4 bytes
 
-                            If .IndexBaseAddr > 0 Then
-                                .Indexed = True
-                            End If
-
-                            If .DBCountIPv6 = 0 Then ' old style IPv4-only BIN file
-                                .OldBIN = True
-                            Else
-                                If .IndexBaseAddrIPv6 > 0 Then
-                                    .IndexedIPv6 = True
+                                If .IndexBaseAddr > 0 Then
+                                    .Indexed = True
                                 End If
-                            End If
 
-                            _IPv4ColumnSize = .DBColumn << 2 ' 4 bytes each column
-                            _IPv6ColumnSize = 16 + ((.DBColumn - 1) << 2) ' 4 bytes each column, except IPFrom column which is 16 bytes
+                                If .DBCountIPv6 = 0 Then ' old style IPv4-only BIN file
+                                    .OldBIN = True
+                                Else
+                                    If .IndexBaseAddrIPv6 > 0 Then
+                                        .IndexedIPv6 = True
+                                    End If
+                                End If
 
-                            Dim dbt As Integer = .DBType
+                                _IPv4ColumnSize = .DBColumn << 2 ' 4 bytes each column
+                                _IPv6ColumnSize = 16 + ((.DBColumn - 1) << 2) ' 4 bytes each column, except IPFrom column which is 16 bytes
 
-                            ' since both IPv4 and IPv6 use 4 bytes for the below columns, can just do it once here
-                            'COUNTRY_POSITION_OFFSET = If(COUNTRY_POSITION(dbt) <> 0, (COUNTRY_POSITION(dbt) - 1) << 2, 0)
-                            'REGION_POSITION_OFFSET = If(REGION_POSITION(dbt) <> 0, (REGION_POSITION(dbt) - 1) << 2, 0)
-                            'CITY_POSITION_OFFSET = If(CITY_POSITION(dbt) <> 0, (CITY_POSITION(dbt) - 1) << 2, 0)
-                            'ISP_POSITION_OFFSET = If(ISP_POSITION(dbt) <> 0, (ISP_POSITION(dbt) - 1) << 2, 0)
-                            'DOMAIN_POSITION_OFFSET = If(DOMAIN_POSITION(dbt) <> 0, (DOMAIN_POSITION(dbt) - 1) << 2, 0)
-                            'ZIPCODE_POSITION_OFFSET = If(ZIPCODE_POSITION(dbt) <> 0, (ZIPCODE_POSITION(dbt) - 1) << 2, 0)
-                            'LATITUDE_POSITION_OFFSET = If(LATITUDE_POSITION(dbt) <> 0, (LATITUDE_POSITION(dbt) - 1) << 2, 0)
-                            'LONGITUDE_POSITION_OFFSET = If(LONGITUDE_POSITION(dbt) <> 0, (LONGITUDE_POSITION(dbt) - 1) << 2, 0)
-                            'TIMEZONE_POSITION_OFFSET = If(TIMEZONE_POSITION(dbt) <> 0, (TIMEZONE_POSITION(dbt) - 1) << 2, 0)
-                            'NETSPEED_POSITION_OFFSET = If(NETSPEED_POSITION(dbt) <> 0, (NETSPEED_POSITION(dbt) - 1) << 2, 0)
-                            'IDDCODE_POSITION_OFFSET = If(IDDCODE_POSITION(dbt) <> 0, (IDDCODE_POSITION(dbt) - 1) << 2, 0)
-                            'AREACODE_POSITION_OFFSET = If(AREACODE_POSITION(dbt) <> 0, (AREACODE_POSITION(dbt) - 1) << 2, 0)
-                            'WEATHERSTATIONCODE_POSITION_OFFSET = If(WEATHERSTATIONCODE_POSITION(dbt) <> 0, (WEATHERSTATIONCODE_POSITION(dbt) - 1) << 2, 0)
-                            'WEATHERSTATIONNAME_POSITION_OFFSET = If(WEATHERSTATIONNAME_POSITION(dbt) <> 0, (WEATHERSTATIONNAME_POSITION(dbt) - 1) << 2, 0)
-                            'MCC_POSITION_OFFSET = If(MCC_POSITION(dbt) <> 0, (MCC_POSITION(dbt) - 1) << 2, 0)
-                            'MNC_POSITION_OFFSET = If(MNC_POSITION(dbt) <> 0, (MNC_POSITION(dbt) - 1) << 2, 0)
-                            'MOBILEBRAND_POSITION_OFFSET = If(MOBILEBRAND_POSITION(dbt) <> 0, (MOBILEBRAND_POSITION(dbt) - 1) << 2, 0)
-                            'ELEVATION_POSITION_OFFSET = If(ELEVATION_POSITION(dbt) <> 0, (ELEVATION_POSITION(dbt) - 1) << 2, 0)
-                            'USAGETYPE_POSITION_OFFSET = If(USAGETYPE_POSITION(dbt) <> 0, (USAGETYPE_POSITION(dbt) - 1) << 2, 0)
+                                Dim dbt As Integer = .DBType
 
-                            ' slightly different offset for reading by row
-                            COUNTRY_POSITION_OFFSET = If(COUNTRY_POSITION(dbt) <> 0, (COUNTRY_POSITION(dbt) - 2) << 2, 0)
-                            REGION_POSITION_OFFSET = If(REGION_POSITION(dbt) <> 0, (REGION_POSITION(dbt) - 2) << 2, 0)
-                            CITY_POSITION_OFFSET = If(CITY_POSITION(dbt) <> 0, (CITY_POSITION(dbt) - 2) << 2, 0)
-                            ISP_POSITION_OFFSET = If(ISP_POSITION(dbt) <> 0, (ISP_POSITION(dbt) - 2) << 2, 0)
-                            DOMAIN_POSITION_OFFSET = If(DOMAIN_POSITION(dbt) <> 0, (DOMAIN_POSITION(dbt) - 2) << 2, 0)
-                            ZIPCODE_POSITION_OFFSET = If(ZIPCODE_POSITION(dbt) <> 0, (ZIPCODE_POSITION(dbt) - 2) << 2, 0)
-                            LATITUDE_POSITION_OFFSET = If(LATITUDE_POSITION(dbt) <> 0, (LATITUDE_POSITION(dbt) - 2) << 2, 0)
-                            LONGITUDE_POSITION_OFFSET = If(LONGITUDE_POSITION(dbt) <> 0, (LONGITUDE_POSITION(dbt) - 2) << 2, 0)
-                            TIMEZONE_POSITION_OFFSET = If(TIMEZONE_POSITION(dbt) <> 0, (TIMEZONE_POSITION(dbt) - 2) << 2, 0)
-                            NETSPEED_POSITION_OFFSET = If(NETSPEED_POSITION(dbt) <> 0, (NETSPEED_POSITION(dbt) - 2) << 2, 0)
-                            IDDCODE_POSITION_OFFSET = If(IDDCODE_POSITION(dbt) <> 0, (IDDCODE_POSITION(dbt) - 2) << 2, 0)
-                            AREACODE_POSITION_OFFSET = If(AREACODE_POSITION(dbt) <> 0, (AREACODE_POSITION(dbt) - 2) << 2, 0)
-                            WEATHERSTATIONCODE_POSITION_OFFSET = If(WEATHERSTATIONCODE_POSITION(dbt) <> 0, (WEATHERSTATIONCODE_POSITION(dbt) - 2) << 2, 0)
-                            WEATHERSTATIONNAME_POSITION_OFFSET = If(WEATHERSTATIONNAME_POSITION(dbt) <> 0, (WEATHERSTATIONNAME_POSITION(dbt) - 2) << 2, 0)
-                            MCC_POSITION_OFFSET = If(MCC_POSITION(dbt) <> 0, (MCC_POSITION(dbt) - 2) << 2, 0)
-                            MNC_POSITION_OFFSET = If(MNC_POSITION(dbt) <> 0, (MNC_POSITION(dbt) - 2) << 2, 0)
-                            MOBILEBRAND_POSITION_OFFSET = If(MOBILEBRAND_POSITION(dbt) <> 0, (MOBILEBRAND_POSITION(dbt) - 2) << 2, 0)
-                            ELEVATION_POSITION_OFFSET = If(ELEVATION_POSITION(dbt) <> 0, (ELEVATION_POSITION(dbt) - 2) << 2, 0)
-                            USAGETYPE_POSITION_OFFSET = If(USAGETYPE_POSITION(dbt) <> 0, (USAGETYPE_POSITION(dbt) - 2) << 2, 0)
+                                ' since both IPv4 and IPv6 use 4 bytes for the below columns, can just do it once here
+                                'COUNTRY_POSITION_OFFSET = If(COUNTRY_POSITION(dbt) <> 0, (COUNTRY_POSITION(dbt) - 1) << 2, 0)
+                                'REGION_POSITION_OFFSET = If(REGION_POSITION(dbt) <> 0, (REGION_POSITION(dbt) - 1) << 2, 0)
+                                'CITY_POSITION_OFFSET = If(CITY_POSITION(dbt) <> 0, (CITY_POSITION(dbt) - 1) << 2, 0)
+                                'ISP_POSITION_OFFSET = If(ISP_POSITION(dbt) <> 0, (ISP_POSITION(dbt) - 1) << 2, 0)
+                                'DOMAIN_POSITION_OFFSET = If(DOMAIN_POSITION(dbt) <> 0, (DOMAIN_POSITION(dbt) - 1) << 2, 0)
+                                'ZIPCODE_POSITION_OFFSET = If(ZIPCODE_POSITION(dbt) <> 0, (ZIPCODE_POSITION(dbt) - 1) << 2, 0)
+                                'LATITUDE_POSITION_OFFSET = If(LATITUDE_POSITION(dbt) <> 0, (LATITUDE_POSITION(dbt) - 1) << 2, 0)
+                                'LONGITUDE_POSITION_OFFSET = If(LONGITUDE_POSITION(dbt) <> 0, (LONGITUDE_POSITION(dbt) - 1) << 2, 0)
+                                'TIMEZONE_POSITION_OFFSET = If(TIMEZONE_POSITION(dbt) <> 0, (TIMEZONE_POSITION(dbt) - 1) << 2, 0)
+                                'NETSPEED_POSITION_OFFSET = If(NETSPEED_POSITION(dbt) <> 0, (NETSPEED_POSITION(dbt) - 1) << 2, 0)
+                                'IDDCODE_POSITION_OFFSET = If(IDDCODE_POSITION(dbt) <> 0, (IDDCODE_POSITION(dbt) - 1) << 2, 0)
+                                'AREACODE_POSITION_OFFSET = If(AREACODE_POSITION(dbt) <> 0, (AREACODE_POSITION(dbt) - 1) << 2, 0)
+                                'WEATHERSTATIONCODE_POSITION_OFFSET = If(WEATHERSTATIONCODE_POSITION(dbt) <> 0, (WEATHERSTATIONCODE_POSITION(dbt) - 1) << 2, 0)
+                                'WEATHERSTATIONNAME_POSITION_OFFSET = If(WEATHERSTATIONNAME_POSITION(dbt) <> 0, (WEATHERSTATIONNAME_POSITION(dbt) - 1) << 2, 0)
+                                'MCC_POSITION_OFFSET = If(MCC_POSITION(dbt) <> 0, (MCC_POSITION(dbt) - 1) << 2, 0)
+                                'MNC_POSITION_OFFSET = If(MNC_POSITION(dbt) <> 0, (MNC_POSITION(dbt) - 1) << 2, 0)
+                                'MOBILEBRAND_POSITION_OFFSET = If(MOBILEBRAND_POSITION(dbt) <> 0, (MOBILEBRAND_POSITION(dbt) - 1) << 2, 0)
+                                'ELEVATION_POSITION_OFFSET = If(ELEVATION_POSITION(dbt) <> 0, (ELEVATION_POSITION(dbt) - 1) << 2, 0)
+                                'USAGETYPE_POSITION_OFFSET = If(USAGETYPE_POSITION(dbt) <> 0, (USAGETYPE_POSITION(dbt) - 1) << 2, 0)
 
-                            COUNTRY_ENABLED = If(COUNTRY_POSITION(dbt) <> 0, True, False)
-                            REGION_ENABLED = If(REGION_POSITION(dbt) <> 0, True, False)
-                            CITY_ENABLED = If(CITY_POSITION(dbt) <> 0, True, False)
-                            ISP_ENABLED = If(ISP_POSITION(dbt) <> 0, True, False)
-                            LATITUDE_ENABLED = If(LATITUDE_POSITION(dbt) <> 0, True, False)
-                            LONGITUDE_ENABLED = If(LONGITUDE_POSITION(dbt) <> 0, True, False)
-                            DOMAIN_ENABLED = If(DOMAIN_POSITION(dbt) <> 0, True, False)
-                            ZIPCODE_ENABLED = If(ZIPCODE_POSITION(dbt) <> 0, True, False)
-                            TIMEZONE_ENABLED = If(TIMEZONE_POSITION(dbt) <> 0, True, False)
-                            NETSPEED_ENABLED = If(NETSPEED_POSITION(dbt) <> 0, True, False)
-                            IDDCODE_ENABLED = If(IDDCODE_POSITION(dbt) <> 0, True, False)
-                            AREACODE_ENABLED = If(AREACODE_POSITION(dbt) <> 0, True, False)
-                            WEATHERSTATIONCODE_ENABLED = If(WEATHERSTATIONCODE_POSITION(dbt) <> 0, True, False)
-                            WEATHERSTATIONNAME_ENABLED = If(WEATHERSTATIONNAME_POSITION(dbt) <> 0, True, False)
-                            MCC_ENABLED = If(MCC_POSITION(dbt) <> 0, True, False)
-                            MNC_ENABLED = If(MNC_POSITION(dbt) <> 0, True, False)
-                            MOBILEBRAND_ENABLED = If(MOBILEBRAND_POSITION(dbt) <> 0, True, False)
-                            ELEVATION_ENABLED = If(ELEVATION_POSITION(dbt) <> 0, True, False)
-                            USAGETYPE_ENABLED = If(USAGETYPE_POSITION(dbt) <> 0, True, False)
+                                ' slightly different offset for reading by row
+                                COUNTRY_POSITION_OFFSET = If(COUNTRY_POSITION(dbt) <> 0, (COUNTRY_POSITION(dbt) - 2) << 2, 0)
+                                REGION_POSITION_OFFSET = If(REGION_POSITION(dbt) <> 0, (REGION_POSITION(dbt) - 2) << 2, 0)
+                                CITY_POSITION_OFFSET = If(CITY_POSITION(dbt) <> 0, (CITY_POSITION(dbt) - 2) << 2, 0)
+                                ISP_POSITION_OFFSET = If(ISP_POSITION(dbt) <> 0, (ISP_POSITION(dbt) - 2) << 2, 0)
+                                DOMAIN_POSITION_OFFSET = If(DOMAIN_POSITION(dbt) <> 0, (DOMAIN_POSITION(dbt) - 2) << 2, 0)
+                                ZIPCODE_POSITION_OFFSET = If(ZIPCODE_POSITION(dbt) <> 0, (ZIPCODE_POSITION(dbt) - 2) << 2, 0)
+                                LATITUDE_POSITION_OFFSET = If(LATITUDE_POSITION(dbt) <> 0, (LATITUDE_POSITION(dbt) - 2) << 2, 0)
+                                LONGITUDE_POSITION_OFFSET = If(LONGITUDE_POSITION(dbt) <> 0, (LONGITUDE_POSITION(dbt) - 2) << 2, 0)
+                                TIMEZONE_POSITION_OFFSET = If(TIMEZONE_POSITION(dbt) <> 0, (TIMEZONE_POSITION(dbt) - 2) << 2, 0)
+                                NETSPEED_POSITION_OFFSET = If(NETSPEED_POSITION(dbt) <> 0, (NETSPEED_POSITION(dbt) - 2) << 2, 0)
+                                IDDCODE_POSITION_OFFSET = If(IDDCODE_POSITION(dbt) <> 0, (IDDCODE_POSITION(dbt) - 2) << 2, 0)
+                                AREACODE_POSITION_OFFSET = If(AREACODE_POSITION(dbt) <> 0, (AREACODE_POSITION(dbt) - 2) << 2, 0)
+                                WEATHERSTATIONCODE_POSITION_OFFSET = If(WEATHERSTATIONCODE_POSITION(dbt) <> 0, (WEATHERSTATIONCODE_POSITION(dbt) - 2) << 2, 0)
+                                WEATHERSTATIONNAME_POSITION_OFFSET = If(WEATHERSTATIONNAME_POSITION(dbt) <> 0, (WEATHERSTATIONNAME_POSITION(dbt) - 2) << 2, 0)
+                                MCC_POSITION_OFFSET = If(MCC_POSITION(dbt) <> 0, (MCC_POSITION(dbt) - 2) << 2, 0)
+                                MNC_POSITION_OFFSET = If(MNC_POSITION(dbt) <> 0, (MNC_POSITION(dbt) - 2) << 2, 0)
+                                MOBILEBRAND_POSITION_OFFSET = If(MOBILEBRAND_POSITION(dbt) <> 0, (MOBILEBRAND_POSITION(dbt) - 2) << 2, 0)
+                                ELEVATION_POSITION_OFFSET = If(ELEVATION_POSITION(dbt) <> 0, (ELEVATION_POSITION(dbt) - 2) << 2, 0)
+                                USAGETYPE_POSITION_OFFSET = If(USAGETYPE_POSITION(dbt) <> 0, (USAGETYPE_POSITION(dbt) - 2) << 2, 0)
 
-                        End With
-                    End Using
+                                COUNTRY_ENABLED = If(COUNTRY_POSITION(dbt) <> 0, True, False)
+                                REGION_ENABLED = If(REGION_POSITION(dbt) <> 0, True, False)
+                                CITY_ENABLED = If(CITY_POSITION(dbt) <> 0, True, False)
+                                ISP_ENABLED = If(ISP_POSITION(dbt) <> 0, True, False)
+                                LATITUDE_ENABLED = If(LATITUDE_POSITION(dbt) <> 0, True, False)
+                                LONGITUDE_ENABLED = If(LONGITUDE_POSITION(dbt) <> 0, True, False)
+                                DOMAIN_ENABLED = If(DOMAIN_POSITION(dbt) <> 0, True, False)
+                                ZIPCODE_ENABLED = If(ZIPCODE_POSITION(dbt) <> 0, True, False)
+                                TIMEZONE_ENABLED = If(TIMEZONE_POSITION(dbt) <> 0, True, False)
+                                NETSPEED_ENABLED = If(NETSPEED_POSITION(dbt) <> 0, True, False)
+                                IDDCODE_ENABLED = If(IDDCODE_POSITION(dbt) <> 0, True, False)
+                                AREACODE_ENABLED = If(AREACODE_POSITION(dbt) <> 0, True, False)
+                                WEATHERSTATIONCODE_ENABLED = If(WEATHERSTATIONCODE_POSITION(dbt) <> 0, True, False)
+                                WEATHERSTATIONNAME_ENABLED = If(WEATHERSTATIONNAME_POSITION(dbt) <> 0, True, False)
+                                MCC_ENABLED = If(MCC_POSITION(dbt) <> 0, True, False)
+                                MNC_ENABLED = If(MNC_POSITION(dbt) <> 0, True, False)
+                                MOBILEBRAND_ENABLED = If(MOBILEBRAND_POSITION(dbt) <> 0, True, False)
+                                ELEVATION_ENABLED = If(ELEVATION_POSITION(dbt) <> 0, True, False)
+                                USAGETYPE_ENABLED = If(USAGETYPE_POSITION(dbt) <> 0, True, False)
 
-                    With _MetaData
-                        If .Indexed Then
-                            Using _IndexAccessor As MemoryMappedViewAccessor = _MMF.CreateViewAccessor(.IndexBaseAddr - 1, .BaseAddr - .IndexBaseAddr, MemoryMappedFileAccess.Read) ' reading indexes
-                                Dim pointer As Integer = 0
+                            End With
+                        End Using
 
-                                ' read IPv4 index
-                                For x As Integer = _IndexArrayIPv4.GetLowerBound(0) To _IndexArrayIPv4.GetUpperBound(0)
-                                    _IndexArrayIPv4(x, 0) = _IndexAccessor.ReadInt32(pointer) '4 bytes for from row
-                                    _IndexArrayIPv4(x, 1) = _IndexAccessor.ReadInt32(pointer + 4) '4 bytes for to row
-                                    pointer += 8
-                                Next
+                        With _MetaData
+                            If .Indexed Then
+                                Using _IndexAccessor As MemoryMappedViewAccessor = _MMF.CreateViewAccessor(.IndexBaseAddr - 1, .BaseAddr - .IndexBaseAddr, MemoryMappedFileAccess.Read) ' reading indexes
+                                    Dim pointer As Integer = 0
 
-                                If .IndexedIPv6 Then
-                                    ' read IPv6 index
-                                    For x As Integer = _IndexArrayIPv6.GetLowerBound(0) To _IndexArrayIPv6.GetUpperBound(0)
-                                        _IndexArrayIPv6(x, 0) = _IndexAccessor.ReadInt32(pointer) '4 bytes for from row
-                                        _IndexArrayIPv6(x, 1) = _IndexAccessor.ReadInt32(pointer + 4) '4 bytes for to row
+                                    ' read IPv4 index
+                                    For x As Integer = _IndexArrayIPv4.GetLowerBound(0) To _IndexArrayIPv4.GetUpperBound(0)
+                                        _IndexArrayIPv4(x, 0) = _IndexAccessor.ReadInt32(pointer) '4 bytes for from row
+                                        _IndexArrayIPv4(x, 1) = _IndexAccessor.ReadInt32(pointer + 4) '4 bytes for to row
                                         pointer += 8
                                     Next
-                                End If
-                            End Using
-                        End If
-                    End With
 
-                    If _UseMemoryMappedFile Then
-                        CreateAccessors()
-                    Else
-                        DestroyMemoryMappedFile()
+                                    If .IndexedIPv6 Then
+                                        ' read IPv6 index
+                                        For x As Integer = _IndexArrayIPv6.GetLowerBound(0) To _IndexArrayIPv6.GetUpperBound(0)
+                                            _IndexArrayIPv6(x, 0) = _IndexAccessor.ReadInt32(pointer) '4 bytes for from row
+                                            _IndexArrayIPv6(x, 1) = _IndexAccessor.ReadInt32(pointer + 4) '4 bytes for to row
+                                            pointer += 8
+                                        Next
+                                    End If
+                                End Using
+                            End If
+                        End With
+
+                        If _UseMemoryMappedFile Then
+                            CreateAccessors()
+                        Else
+                            DestroyMemoryMappedFile()
+                        End If
+                        loadOK = True
                     End If
-                    loadOK = True
                 End If
             Catch ex As Exception
                 ErrLog(ex.Message & " -- " & ex.StackTrace)
