@@ -6,10 +6,12 @@
     <AssemblyName>IP2Location</AssemblyName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>IP2Location.IPGeolocation</PackageId>
-    <Version>8.6.1</Version>
+    <Version>8.6.2</Version>
     <Authors>IP2Location.com</Authors>
     <Company>IP2Location.com</Company>
+    <Title>IP2Location Geolocation .NET Component</Title>
     <Product>IP2Location Geolocation .NET Component</Product>
+    <RepositoryUrl>https://github.com/ip2location/ip2location-dotnet.git</RepositoryUrl>
     <Description>Discover your visitors’ geolocation information such as country, region, city, latitude &amp; longitude, ZIP codes, time zone and more from an IP address. It support both the IPv4 and IPv6 address. Below are the complete geolocation information that you can query using this component.
 
 * Country
@@ -35,11 +37,12 @@ As an alternative, you can also call the IP2Location Web Service using an API ke
     <PackageIcon>ipl-logo-square-128.png</PackageIcon>
     <PackageLicenseFile></PackageLicenseFile>
     <PackageTags>ip2location .net ip geolocation</PackageTags>
-    <PackageReleaseNotes>Added checking for null MemoryMappedFile object.</PackageReleaseNotes>
+    <PackageReleaseNotes>Added repository metadata.</PackageReleaseNotes>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>IP2LocationComponent.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
