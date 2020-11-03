@@ -279,8 +279,6 @@ Try
 
 	If myresult("response") IsNot Nothing Then
 		Console.WriteLine("Credit balance: " & myresult("response").ToString)
-	Else
-		Console.WriteLine("Error: " & myresult("response").ToString)
 	End If
 Catch ex As Exception
 	Console.WriteLine(ex.Message)
