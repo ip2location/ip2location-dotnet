@@ -1,11 +1,11 @@
-# IP2Location .NET Component
+# IP2Location IP Geolocation .NET Component
 
-This component allows user to query an IP address for its geolocation info such as country, region or state, city, latitude and longitude, ZIP/Postal code, time zone, Internet Service Provider (ISP) or company name, domain name, net speed, area code, weather station code, weather station name, mobile country code (MCC), mobile network code (MNC) and carrier brand, elevation, and usage type. It lookup the IP address from **IP2Location BIN Data** file. This data file can be downloaded at
+This IP Geolocation .NET allows user to query an IP address for its IP geolocation info such as country, region or state, city, latitude and longitude, ZIP/Postal code, time zone, Internet Service Provider (ISP) or company name, domain name, net speed, area code, weather station code, weather station name, mobile country code (MCC), mobile network code (MNC) and carrier brand, elevation, and usage type. It lookup the IP address from **IP2Location BIN Data** file. This data file can be downloaded at
 
-* Free IP2Location BIN Data: https://lite.ip2location.com
-* Commercial IP2Location BIN Data: https://www.ip2location.com/database/ip2location
+* Free IP2Location IP Geolocation BIN Data: https://lite.ip2location.com
+* Commercial IP2Location IP Geolocation BIN Data: https://www.ip2location.com/database/ip2location
 
-As an alternative, this component can also call the IP2Location Web Service. This requires an API key. If you don't have an existing API key, you can subscribe for one at the below:
+As an alternative, this geolocation component can also call the IP2Location Web Service. This requires an API key. If you don't have an existing API key, you can subscribe for one at the below:
 
 https://www.ip2location.com/web-service/ip2location
 
@@ -128,7 +128,7 @@ End Try
 
 ```
 
-## QUERY USING THE WEB SERVICE
+## QUERY USING THE IP2LOCATION IP GEOLOCATION WEB SERVICE
 
 ## Methods
 Below are the methods supported in this class.
