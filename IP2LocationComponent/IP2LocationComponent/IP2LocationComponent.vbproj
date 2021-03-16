@@ -6,7 +6,7 @@
     <AssemblyName>IP2Location</AssemblyName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>IP2Location.IPGeolocation</PackageId>
-    <Version>8.6.2</Version>
+    <Version>8.6.3</Version>
     <Authors>IP2Location.com</Authors>
     <Company>IP2Location.com</Company>
     <Title>IP2Location Geolocation .NET Component</Title>
@@ -32,12 +32,12 @@
 This component works together with IP2Location BIN data file. You can download the free BIN data file at https://lite.ip2location.com or a commercial BIN data (high accuracy) at https://www.ip2location.com.
 
 As an alternative, you can also call the IP2Location Web Service using an API key. If you don't have an API key, you can subscribe for one at https://www.ip2location.com/web-service/ip2location to get started.</Description>
-    <Copyright>Copyright 2020 IP2Location.com</Copyright>
+    <Copyright>Copyright 2021 IP2Location.com</Copyright>
     <PackageProjectUrl>https://www.ip2location.com/development-libraries/ip2location/nuget</PackageProjectUrl>
     <PackageIcon>ipl-logo-square-128.png</PackageIcon>
     <PackageLicenseFile></PackageLicenseFile>
     <PackageTags>ip2location .net ip geolocation</PackageTags>
-    <PackageReleaseNotes>Added repository metadata.</PackageReleaseNotes>
+    <PackageReleaseNotes>Removed logging.</PackageReleaseNotes>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>IP2LocationComponent.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
