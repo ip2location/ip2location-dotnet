@@ -22,6 +22,10 @@ Friend Class MetaData
     Dim _IndexedIPv6 As Boolean = False
     Dim _IndexBaseAddr As Integer = 0
     Dim _IndexBaseAddrIPv6 As Integer = 0
+    Dim _ProductCode As Integer = 0
+    Dim _ProductType As Integer = 0
+    Dim _FileSize As Integer = 0
+
 
     Public Property BaseAddr() As Integer
         Get
@@ -152,6 +156,33 @@ Friend Class MetaData
         End Get
         Set(ByVal Value As Integer)
             _IndexBaseAddrIPv6 = Value
+        End Set
+    End Property
+
+    Public Property ProductCode() As Integer
+        Get
+            Return _ProductCode
+        End Get
+        Set(ByVal Value As Integer)
+            _ProductCode = Value
+        End Set
+    End Property
+
+    Public Property ProductType() As Integer
+        Get
+            Return _ProductType
+        End Get
+        Set(ByVal Value As Integer)
+            _ProductType = Value
+        End Set
+    End Property
+
+    Public Property FileSize() As Integer
+        Get
+            Return _FileSize
+        End Get
+        Set(ByVal Value As Integer)
+            _FileSize = Value
         End Set
     End Property
 End Class

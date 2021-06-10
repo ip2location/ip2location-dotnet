@@ -6,7 +6,7 @@
     <AssemblyName>IP2Location</AssemblyName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>IP2Location.IPGeolocation</PackageId>
-    <Version>8.6.3</Version>
+    <Version>8.7.0</Version>
     <Authors>IP2Location.com</Authors>
     <Company>IP2Location.com</Company>
     <Title>IP2Location Geolocation .NET Component</Title>
@@ -28,6 +28,8 @@
 * Mobile information
 * Elevation
 * Usage Type
+* Address Type
+* IAB Category
 
 This component works together with IP2Location BIN data file. You can download the free BIN data file at https://lite.ip2location.com or a commercial BIN data (high accuracy) at https://www.ip2location.com.
 
@@ -37,7 +39,7 @@ As an alternative, you can also call the IP2Location Web Service using an API ke
     <PackageIcon>ipl-logo-square-128.png</PackageIcon>
     <PackageLicenseFile></PackageLicenseFile>
     <PackageTags>ip2location .net ip geolocation</PackageTags>
-    <PackageReleaseNotes>Removed logging.</PackageReleaseNotes>
+    <PackageReleaseNotes>Added support for address type and IAB category. Added exception handling for wrong BIN file.</PackageReleaseNotes>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>IP2LocationComponent.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
