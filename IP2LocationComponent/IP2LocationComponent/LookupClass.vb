@@ -3,7 +3,7 @@
 ' URL          : http://www.ip2location.com
 ' Email        : sales@ip2location.com
 '
-' Copyright (c) 2002-2021 IP2Location.com
+' Copyright (c) 2002-2022 IP2Location.com
 '---------------------------------------------------------------------------
 Public Class IPResult
     Dim m_ip As String = "?"

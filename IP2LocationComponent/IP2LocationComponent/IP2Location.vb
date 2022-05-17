@@ -15,7 +15,7 @@
 ' URL          : http://www.ip2location.com
 ' Email        : sales@ip2location.com
 '
-' Copyright (c) 2002-2021 IP2Location.com
+' Copyright (c) 2002-2022 IP2Location.com
 '
 '---------------------------------------------------------------------------
 Imports System.IO
@@ -826,9 +826,9 @@ Public NotInheritable Class Component
 
             If Not _OutlierCase3.IsMatch(strParam) AndAlso Not _OutlierCase4.IsMatch(strParam) AndAlso Not _OutlierCase5.IsMatch(strParam) AndAlso IPAddress.TryParse(strParam, address) Then
                 Select Case address.AddressFamily
-                    Case System.Net.Sockets.AddressFamily.InterNetwork
+                    Case Sockets.AddressFamily.InterNetwork
                         strIPType = 4
-                    Case System.Net.Sockets.AddressFamily.InterNetworkV6
+                    Case Sockets.AddressFamily.InterNetworkV6
                         strIPType = 6
                     Case Else
                         Return "Invalid IP"
