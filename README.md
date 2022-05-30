@@ -293,3 +293,47 @@ Finally
 End Try
 
 ```
+
+## IPTools Class
+
+## Methods
+Below are the methods supported in this class.
+
+|Method Name|Description|
+|---|---|
+|IsIPv4(ByVal IP As String) As Boolean|Returns true is string contains an IPv4 address. Otherwise false.|
+|IsIPv6(ByVal IP As String) As Boolean|Returns true is string contains an IPv6 address. Otherwise false.|
+|IPv4ToDecimal(ByVal IP As String) As BigInteger|Returns the IP number for an IPv4 address.|
+|IPv6ToDecimal(ByVal IP As String) As BigInteger|Returns the IP number for an IPv6 address.|
+|DecimalToIPv4(ByVal IPNum As BigInteger) As String|Returns the IPv4 address for the supplied IP number.|
+|DecimalToIPv6(ByVal IPNum As BigInteger) As String|Returns the IPv6 address for the supplied IP number.|
+|CompressIPv6(ByVal IP As String) As String|Returns the IPv6 address in compressed form.|
+|ExpandIPv6(ByVal IP As String) As String|Returns the IPv6 address in expanded form.|
+|IPv4ToCIDR(ByVal IPFrom As String, ByVal IPTo As String) As List(Of String)|Returns a list of CIDR from the supplied IPv4 range.|
+|IPv6ToCIDR(ByVal IPFrom As String, ByVal IPTo As String) As List(Of String)|Returns a list of CIDR from the supplied IPv6 range.|
+|CIDRToIPv4(ByVal CIDR As String) As (IPStart As String, IPEnd As String)|Returns the IPv4 range from the supplied CIDR.|
+|CIDRToIPv6(ByVal CIDR As String) As (IPStart As String, IPEnd As String)|Returns the IPv6 range from the supplied CIDR.|
+
+## Usage
+
+```vb.net
+Dim tools = New IP2Location.IPTools()
+
+Console.WriteLine(tools.IsIPv4("60.54.166.38"))
+Console.WriteLine(tools.IsIPv6("2600:1f18:45b0:5b00:f5d8:4183:7710:ceec"))
+Console.WriteLine(tools.IPv4ToDecimal("60.54.166.38"))
+Console.WriteLine(tools.IPv6ToDecimal("::313F:11:FC:9834"))
+Console.WriteLine(tools.DecimalToIPv4(BigInteger.Parse("770")))
+Console.WriteLine(tools.DecimalToIPv6(BigInteger.Parse("3548555104422238260")))
+Console.WriteLine(tools.CompressIPv6("0000:0000:0000:35:0000:FFFF:0000:0000"))
+Console.WriteLine(tools.ExpandIPv6("::35:00:FFFF:000:0"))
+Console.WriteLine(String.Join(vbNewLine, tools.IPv4ToCIDR("10.0.0.0", "10.0.0.255")))
+Console.WriteLine(String.Join(vbNewLine, tools.IPv6ToCIDR("2001:0DB8:1234:0000:0000:0000:0000:0000", "2001:0DB8:1234:FFFF:FFFF:FFFF:FFFF:FFFF")))
+Dim stuff = tools.CIDRToIPv4("2002::1234:abcd:ffff:c0a8:101/64")
+Console.WriteLine(stuff.IPStart)
+Console.WriteLine(stuff.IPEnd)
+stuff = tools.CIDRToIPv6("2002::1234:abcd:ffff:c0a8:101/64")
+Console.WriteLine(stuff.IPStart)
+Console.WriteLine(stuff.IPEnd)
+
+```

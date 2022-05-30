@@ -440,13 +440,6 @@ Public NotInheritable Class Component
         End If
     End Sub
 
-    ' Description: Reverse the bytes
-    Private Sub ReverseArray(ByRef byteArr() As Byte)
-        Dim byteList As New List(Of Byte)(byteArr)
-        byteList.Reverse()
-        byteArr = byteList.ToArray()
-    End Sub
-
     ' Description: Query database to get location information by IP address
     Public Function IPQuery(ByVal myIPAddress As String) As IPResult
         Dim obj As New IPResult
