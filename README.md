@@ -294,7 +294,7 @@ End Try
 
 ```
 
-## IPTools Class
+## IPTOOLS CLASS
 
 ## Methods
 Below are the methods supported in this class.
