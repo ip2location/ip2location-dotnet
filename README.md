@@ -301,8 +301,8 @@ Below are the methods supported in this class.
 
 |Method Name|Description|
 |---|---|
-|IsIPv4(ByVal IP As String) As Boolean|Returns true is string contains an IPv4 address. Otherwise false.|
-|IsIPv6(ByVal IP As String) As Boolean|Returns true is string contains an IPv6 address. Otherwise false.|
+|IsIPv4(ByVal IP As String) As Boolean|Returns true if string contains an IPv4 address. Otherwise false.|
+|IsIPv6(ByVal IP As String) As Boolean|Returns true if string contains an IPv6 address. Otherwise false.|
 |IPv4ToDecimal(ByVal IP As String) As BigInteger|Returns the IP number for an IPv4 address.|
 |IPv6ToDecimal(ByVal IP As String) As BigInteger|Returns the IP number for an IPv6 address.|
 |DecimalToIPv4(ByVal IPNum As BigInteger) As String|Returns the IPv4 address for the supplied IP number.|
