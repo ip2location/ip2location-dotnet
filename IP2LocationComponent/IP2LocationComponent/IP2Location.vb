@@ -297,131 +297,144 @@ Public NotInheritable Class Component
     Public Function LoadBIN() As Boolean
         Dim loadOK As Boolean = False
         SyncLock _LockLoadBIN
-            If _DBFilePath <> "" Then
-                CreateMemoryMappedFile()
+            Try
+                If _DBFilePath <> "" Then
+                    If _MetaData Is Nothing Then
+                        Using _Filestream = New FileStream(_DBFilePath, FileMode.Open, FileAccess.Read, FileShare.Read)
+                            Dim len = 64 ' 64-byte header
+                            Dim row(len - 1) As Byte
 
-                If _MMF IsNot Nothing Then ' file either couldn't be read or path incorrect
-                    ' below use temp accessor as we only need once to read meta data (use this even when in filestream mode)
-                    Using _MetaAccessor As MemoryMappedViewAccessor = _MMF.CreateViewAccessor(0, 64, MemoryMappedFileAccess.Read) ' 64 bytes header
-                        _MetaData = New MetaData
-                        With _MetaData
-                            .DBType = _MetaAccessor.ReadByte(0)
-                            .DBColumn = _MetaAccessor.ReadByte(1)
-                            .DBYear = _MetaAccessor.ReadByte(2)
-                            .DBMonth = _MetaAccessor.ReadByte(3)
-                            .DBDay = _MetaAccessor.ReadByte(4)
-                            .DBCount = _MetaAccessor.ReadInt32(5) '4 bytes
-                            .BaseAddr = _MetaAccessor.ReadInt32(9) '4 bytes
-                            .DBCountIPv6 = _MetaAccessor.ReadInt32(13) '4 bytes
-                            .BaseAddrIPv6 = _MetaAccessor.ReadInt32(17) '4 bytes
-                            .IndexBaseAddr = _MetaAccessor.ReadInt32(21) '4 bytes
-                            .IndexBaseAddrIPv6 = _MetaAccessor.ReadInt32(25) '4 bytes
-                            .ProductCode = _MetaAccessor.ReadByte(29)
-                            ' below 2 fields just read for now, not being used yet
-                            .ProductType = _MetaAccessor.ReadByte(30)
-                            .FileSize = _MetaAccessor.ReadInt32(31) '4 bytes
+                            _Filestream.Seek(0, SeekOrigin.Begin)
+                            _Filestream.Read(row, 0, len)
 
-                            ' check if is correct BIN (should be 1 for IP2Location BIN file), also checking for zipped file (PK being the first 2 chars)
-                            If (.ProductCode <> 1 AndAlso .DBYear >= 21) OrElse (.DBType = 80 AndAlso .DBColumn = 75) Then ' only BINs from Jan 2021 onwards have this byte set
-                                Throw New Exception(MSG_INVALID_BIN)
-                            End If
+                            _MetaData = New MetaData
+                            With _MetaData
+                                .DBType = Read8FromHeader(row, 0)
+                                .DBColumn = Read8FromHeader(row, 1)
+                                .DBYear = Read8FromHeader(row, 2)
+                                .DBMonth = Read8FromHeader(row, 3)
+                                .DBDay = Read8FromHeader(row, 4)
+                                .DBCount = Read32FromHeader(row, 5) '4 bytes
+                                .BaseAddr = Read32FromHeader(row, 9) '4 bytes
+                                .DBCountIPv6 = Read32FromHeader(row, 13) '4 bytes
+                                .BaseAddrIPv6 = Read32FromHeader(row, 17) '4 bytes
+                                .IndexBaseAddr = Read32FromHeader(row, 21) '4 bytes
+                                .IndexBaseAddrIPv6 = Read32FromHeader(row, 25) '4 bytes
+                                .ProductCode = Read8FromHeader(row, 29)
+                                ' below 2 fields just read for now, not being used yet
+                                .ProductType = Read8FromHeader(row, 30)
+                                .FileSize = Read32FromHeader(row, 31) '4 bytes
 
-                            If .IndexBaseAddr > 0 Then
-                                .Indexed = True
-                            End If
-
-                            If .DBCountIPv6 = 0 Then ' old style IPv4-only BIN file
-                                .OldBIN = True
-                            Else
-                                If .IndexBaseAddrIPv6 > 0 Then
-                                    .IndexedIPv6 = True
+                                ' check if is correct BIN (should be 1 for IP2Location BIN file), also checking for zipped file (PK being the first 2 chars)
+                                If (.ProductCode <> 1 AndAlso .DBYear >= 21) OrElse (.DBType = 80 AndAlso .DBColumn = 75) Then ' only BINs from Jan 2021 onwards have this byte set
+                                    Throw New Exception(MSG_INVALID_BIN)
                                 End If
-                            End If
 
-                            _IPv4ColumnSize = .DBColumn << 2 ' 4 bytes each column
-                            _IPv6ColumnSize = 16 + ((.DBColumn - 1) << 2) ' 4 bytes each column, except IPFrom column which is 16 bytes
+                                If .IndexBaseAddr > 0 Then
+                                    .Indexed = True
+                                End If
 
-                            Dim dbt As Integer = .DBType
+                                If .DBCountIPv6 = 0 Then ' old style IPv4-only BIN file
+                                    .OldBIN = True
+                                Else
+                                    If .IndexBaseAddrIPv6 > 0 Then
+                                        .IndexedIPv6 = True
+                                    End If
+                                End If
 
-                            COUNTRY_POSITION_OFFSET = If(COUNTRY_POSITION(dbt) <> 0, (COUNTRY_POSITION(dbt) - 2) << 2, 0)
-                            REGION_POSITION_OFFSET = If(REGION_POSITION(dbt) <> 0, (REGION_POSITION(dbt) - 2) << 2, 0)
-                            CITY_POSITION_OFFSET = If(CITY_POSITION(dbt) <> 0, (CITY_POSITION(dbt) - 2) << 2, 0)
-                            ISP_POSITION_OFFSET = If(ISP_POSITION(dbt) <> 0, (ISP_POSITION(dbt) - 2) << 2, 0)
-                            DOMAIN_POSITION_OFFSET = If(DOMAIN_POSITION(dbt) <> 0, (DOMAIN_POSITION(dbt) - 2) << 2, 0)
-                            ZIPCODE_POSITION_OFFSET = If(ZIPCODE_POSITION(dbt) <> 0, (ZIPCODE_POSITION(dbt) - 2) << 2, 0)
-                            LATITUDE_POSITION_OFFSET = If(LATITUDE_POSITION(dbt) <> 0, (LATITUDE_POSITION(dbt) - 2) << 2, 0)
-                            LONGITUDE_POSITION_OFFSET = If(LONGITUDE_POSITION(dbt) <> 0, (LONGITUDE_POSITION(dbt) - 2) << 2, 0)
-                            TIMEZONE_POSITION_OFFSET = If(TIMEZONE_POSITION(dbt) <> 0, (TIMEZONE_POSITION(dbt) - 2) << 2, 0)
-                            NETSPEED_POSITION_OFFSET = If(NETSPEED_POSITION(dbt) <> 0, (NETSPEED_POSITION(dbt) - 2) << 2, 0)
-                            IDDCODE_POSITION_OFFSET = If(IDDCODE_POSITION(dbt) <> 0, (IDDCODE_POSITION(dbt) - 2) << 2, 0)
-                            AREACODE_POSITION_OFFSET = If(AREACODE_POSITION(dbt) <> 0, (AREACODE_POSITION(dbt) - 2) << 2, 0)
-                            WEATHERSTATIONCODE_POSITION_OFFSET = If(WEATHERSTATIONCODE_POSITION(dbt) <> 0, (WEATHERSTATIONCODE_POSITION(dbt) - 2) << 2, 0)
-                            WEATHERSTATIONNAME_POSITION_OFFSET = If(WEATHERSTATIONNAME_POSITION(dbt) <> 0, (WEATHERSTATIONNAME_POSITION(dbt) - 2) << 2, 0)
-                            MCC_POSITION_OFFSET = If(MCC_POSITION(dbt) <> 0, (MCC_POSITION(dbt) - 2) << 2, 0)
-                            MNC_POSITION_OFFSET = If(MNC_POSITION(dbt) <> 0, (MNC_POSITION(dbt) - 2) << 2, 0)
-                            MOBILEBRAND_POSITION_OFFSET = If(MOBILEBRAND_POSITION(dbt) <> 0, (MOBILEBRAND_POSITION(dbt) - 2) << 2, 0)
-                            ELEVATION_POSITION_OFFSET = If(ELEVATION_POSITION(dbt) <> 0, (ELEVATION_POSITION(dbt) - 2) << 2, 0)
-                            USAGETYPE_POSITION_OFFSET = If(USAGETYPE_POSITION(dbt) <> 0, (USAGETYPE_POSITION(dbt) - 2) << 2, 0)
-                            ADDRESSTYPE_POSITION_OFFSET = If(ADDRESSTYPE_POSITION(dbt) <> 0, (ADDRESSTYPE_POSITION(dbt) - 2) << 2, 0)
-                            CATEGORY_POSITION_OFFSET = If(CATEGORY_POSITION(dbt) <> 0, (CATEGORY_POSITION(dbt) - 2) << 2, 0)
+                                _IPv4ColumnSize = .DBColumn << 2 ' 4 bytes each column
+                                _IPv6ColumnSize = 16 + ((.DBColumn - 1) << 2) ' 4 bytes each column, except IPFrom column which is 16 bytes
 
-                            COUNTRY_ENABLED = COUNTRY_POSITION(dbt) <> 0
-                            REGION_ENABLED = REGION_POSITION(dbt) <> 0
-                            CITY_ENABLED = CITY_POSITION(dbt) <> 0
-                            ISP_ENABLED = ISP_POSITION(dbt) <> 0
-                            LATITUDE_ENABLED = LATITUDE_POSITION(dbt) <> 0
-                            LONGITUDE_ENABLED = LONGITUDE_POSITION(dbt) <> 0
-                            DOMAIN_ENABLED = DOMAIN_POSITION(dbt) <> 0
-                            ZIPCODE_ENABLED = ZIPCODE_POSITION(dbt) <> 0
-                            TIMEZONE_ENABLED = TIMEZONE_POSITION(dbt) <> 0
-                            NETSPEED_ENABLED = NETSPEED_POSITION(dbt) <> 0
-                            IDDCODE_ENABLED = IDDCODE_POSITION(dbt) <> 0
-                            AREACODE_ENABLED = AREACODE_POSITION(dbt) <> 0
-                            WEATHERSTATIONCODE_ENABLED = WEATHERSTATIONCODE_POSITION(dbt) <> 0
-                            WEATHERSTATIONNAME_ENABLED = WEATHERSTATIONNAME_POSITION(dbt) <> 0
-                            MCC_ENABLED = MCC_POSITION(dbt) <> 0
-                            MNC_ENABLED = MNC_POSITION(dbt) <> 0
-                            MOBILEBRAND_ENABLED = MOBILEBRAND_POSITION(dbt) <> 0
-                            ELEVATION_ENABLED = ELEVATION_POSITION(dbt) <> 0
-                            USAGETYPE_ENABLED = USAGETYPE_POSITION(dbt) <> 0
-                            ADDRESSTYPE_ENABLED = ADDRESSTYPE_POSITION(dbt) <> 0
-                            CATEGORY_ENABLED = CATEGORY_POSITION(dbt) <> 0
+                                Dim dbt As Integer = .DBType
 
-                        End With
-                    End Using
+                                COUNTRY_POSITION_OFFSET = If(COUNTRY_POSITION(dbt) <> 0, (COUNTRY_POSITION(dbt) - 2) << 2, 0)
+                                REGION_POSITION_OFFSET = If(REGION_POSITION(dbt) <> 0, (REGION_POSITION(dbt) - 2) << 2, 0)
+                                CITY_POSITION_OFFSET = If(CITY_POSITION(dbt) <> 0, (CITY_POSITION(dbt) - 2) << 2, 0)
+                                ISP_POSITION_OFFSET = If(ISP_POSITION(dbt) <> 0, (ISP_POSITION(dbt) - 2) << 2, 0)
+                                DOMAIN_POSITION_OFFSET = If(DOMAIN_POSITION(dbt) <> 0, (DOMAIN_POSITION(dbt) - 2) << 2, 0)
+                                ZIPCODE_POSITION_OFFSET = If(ZIPCODE_POSITION(dbt) <> 0, (ZIPCODE_POSITION(dbt) - 2) << 2, 0)
+                                LATITUDE_POSITION_OFFSET = If(LATITUDE_POSITION(dbt) <> 0, (LATITUDE_POSITION(dbt) - 2) << 2, 0)
+                                LONGITUDE_POSITION_OFFSET = If(LONGITUDE_POSITION(dbt) <> 0, (LONGITUDE_POSITION(dbt) - 2) << 2, 0)
+                                TIMEZONE_POSITION_OFFSET = If(TIMEZONE_POSITION(dbt) <> 0, (TIMEZONE_POSITION(dbt) - 2) << 2, 0)
+                                NETSPEED_POSITION_OFFSET = If(NETSPEED_POSITION(dbt) <> 0, (NETSPEED_POSITION(dbt) - 2) << 2, 0)
+                                IDDCODE_POSITION_OFFSET = If(IDDCODE_POSITION(dbt) <> 0, (IDDCODE_POSITION(dbt) - 2) << 2, 0)
+                                AREACODE_POSITION_OFFSET = If(AREACODE_POSITION(dbt) <> 0, (AREACODE_POSITION(dbt) - 2) << 2, 0)
+                                WEATHERSTATIONCODE_POSITION_OFFSET = If(WEATHERSTATIONCODE_POSITION(dbt) <> 0, (WEATHERSTATIONCODE_POSITION(dbt) - 2) << 2, 0)
+                                WEATHERSTATIONNAME_POSITION_OFFSET = If(WEATHERSTATIONNAME_POSITION(dbt) <> 0, (WEATHERSTATIONNAME_POSITION(dbt) - 2) << 2, 0)
+                                MCC_POSITION_OFFSET = If(MCC_POSITION(dbt) <> 0, (MCC_POSITION(dbt) - 2) << 2, 0)
+                                MNC_POSITION_OFFSET = If(MNC_POSITION(dbt) <> 0, (MNC_POSITION(dbt) - 2) << 2, 0)
+                                MOBILEBRAND_POSITION_OFFSET = If(MOBILEBRAND_POSITION(dbt) <> 0, (MOBILEBRAND_POSITION(dbt) - 2) << 2, 0)
+                                ELEVATION_POSITION_OFFSET = If(ELEVATION_POSITION(dbt) <> 0, (ELEVATION_POSITION(dbt) - 2) << 2, 0)
+                                USAGETYPE_POSITION_OFFSET = If(USAGETYPE_POSITION(dbt) <> 0, (USAGETYPE_POSITION(dbt) - 2) << 2, 0)
+                                ADDRESSTYPE_POSITION_OFFSET = If(ADDRESSTYPE_POSITION(dbt) <> 0, (ADDRESSTYPE_POSITION(dbt) - 2) << 2, 0)
+                                CATEGORY_POSITION_OFFSET = If(CATEGORY_POSITION(dbt) <> 0, (CATEGORY_POSITION(dbt) - 2) << 2, 0)
 
-                    With _MetaData
-                        If .Indexed Then
-                            Using _IndexAccessor As MemoryMappedViewAccessor = _MMF.CreateViewAccessor(.IndexBaseAddr - 1, .BaseAddr - .IndexBaseAddr, MemoryMappedFileAccess.Read) ' reading indexes
-                                Dim pointer As Integer = 0
+                                COUNTRY_ENABLED = COUNTRY_POSITION(dbt) <> 0
+                                REGION_ENABLED = REGION_POSITION(dbt) <> 0
+                                CITY_ENABLED = CITY_POSITION(dbt) <> 0
+                                ISP_ENABLED = ISP_POSITION(dbt) <> 0
+                                LATITUDE_ENABLED = LATITUDE_POSITION(dbt) <> 0
+                                LONGITUDE_ENABLED = LONGITUDE_POSITION(dbt) <> 0
+                                DOMAIN_ENABLED = DOMAIN_POSITION(dbt) <> 0
+                                ZIPCODE_ENABLED = ZIPCODE_POSITION(dbt) <> 0
+                                TIMEZONE_ENABLED = TIMEZONE_POSITION(dbt) <> 0
+                                NETSPEED_ENABLED = NETSPEED_POSITION(dbt) <> 0
+                                IDDCODE_ENABLED = IDDCODE_POSITION(dbt) <> 0
+                                AREACODE_ENABLED = AREACODE_POSITION(dbt) <> 0
+                                WEATHERSTATIONCODE_ENABLED = WEATHERSTATIONCODE_POSITION(dbt) <> 0
+                                WEATHERSTATIONNAME_ENABLED = WEATHERSTATIONNAME_POSITION(dbt) <> 0
+                                MCC_ENABLED = MCC_POSITION(dbt) <> 0
+                                MNC_ENABLED = MNC_POSITION(dbt) <> 0
+                                MOBILEBRAND_ENABLED = MOBILEBRAND_POSITION(dbt) <> 0
+                                ELEVATION_ENABLED = ELEVATION_POSITION(dbt) <> 0
+                                USAGETYPE_ENABLED = USAGETYPE_POSITION(dbt) <> 0
+                                ADDRESSTYPE_ENABLED = ADDRESSTYPE_POSITION(dbt) <> 0
+                                CATEGORY_ENABLED = CATEGORY_POSITION(dbt) <> 0
 
-                                ' read IPv4 index
-                                For x As Integer = _IndexArrayIPv4.GetLowerBound(0) To _IndexArrayIPv4.GetUpperBound(0)
-                                    _IndexArrayIPv4(x, 0) = _IndexAccessor.ReadInt32(pointer) '4 bytes for from row
-                                    _IndexArrayIPv4(x, 1) = _IndexAccessor.ReadInt32(pointer + 4) '4 bytes for to row
-                                    pointer += 8
-                                Next
+                                If .Indexed Then
+                                    Dim readLen = _IndexArrayIPv4.GetLength(0)
+                                    If .IndexBaseAddrIPv6 > 0 Then
+                                        readLen += _IndexArrayIPv6.GetLength(0)
+                                    End If
 
-                                If .IndexedIPv6 Then
-                                    ' read IPv6 index
-                                    For x As Integer = _IndexArrayIPv6.GetLowerBound(0) To _IndexArrayIPv6.GetUpperBound(0)
-                                        _IndexArrayIPv6(x, 0) = _IndexAccessor.ReadInt32(pointer) '4 bytes for from row
-                                        _IndexArrayIPv6(x, 1) = _IndexAccessor.ReadInt32(pointer + 4) '4 bytes for to row
+                                    readLen *= 8 ' 4 bytes for both From/To
+                                    Dim indexData(readLen - 1) As Byte
+
+                                    _Filestream.Seek(.IndexBaseAddr - 1, SeekOrigin.Begin)
+                                    _Filestream.Read(indexData, 0, readLen)
+
+                                    Dim pointer As Integer = 0
+
+                                    ' read IPv4 index
+                                    For x As Integer = _IndexArrayIPv4.GetLowerBound(0) To _IndexArrayIPv4.GetUpperBound(0)
+                                        _IndexArrayIPv4(x, 0) = Read32FromHeader(indexData, pointer) '4 bytes for from row
+                                        _IndexArrayIPv4(x, 1) = Read32FromHeader(indexData, pointer + 4) '4 bytes for to row
                                         pointer += 8
                                     Next
-                                End If
-                            End Using
-                        End If
-                    End With
 
-                    If _UseMemoryMappedFile Then
-                        CreateAccessors()
-                    Else
-                        DestroyMemoryMappedFile()
+                                    If .IndexedIPv6 Then
+                                        ' read IPv6 index
+                                        For x As Integer = _IndexArrayIPv6.GetLowerBound(0) To _IndexArrayIPv6.GetUpperBound(0)
+                                            _IndexArrayIPv6(x, 0) = Read32FromHeader(indexData, pointer) '4 bytes for from row
+                                            _IndexArrayIPv6(x, 1) = Read32FromHeader(indexData, pointer + 4) '4 bytes for to row
+                                            pointer += 8
+                                        Next
+                                    End If
+                                End If
+
+                            End With
+                        End Using
+
+                        If _UseMemoryMappedFile Then
+                            CreateMemoryMappedFile()
+                            CreateAccessors()
+                        End If
+                        loadOK = True
                     End If
-                    loadOK = True
                 End If
-            End If
+            Catch ex As Exception
+                _MetaData = Nothing ' reset if encounter any exception
+            End Try
         End SyncLock
         Return loadOK
     End Function
@@ -462,6 +475,9 @@ Public NotInheritable Class Component
         Dim rowoffset2 As Long
         Dim myColumnSize As Integer = 0
         Dim overCapacity As Boolean = False
+        Dim fullRow As Byte() = Nothing
+        Dim row As Byte()
+        Dim firstCol As Integer = 4 ' IP From is 4 bytes
 
         Try
             If myIPAddress = "" OrElse myIPAddress Is Nothing Then
@@ -513,6 +529,7 @@ Public NotInheritable Class Component
                     End If
                 Case 6
                     ' IPv6
+                    firstCol = 16 ' IPv6 is 16 bytes
                     If _MetaData.OldBIN Then ' old IPv4-only BIN don't contain IPv6 data
                         obj.Status = "IPV6_NOT_SUPPORTED"
                         Return obj
@@ -544,11 +561,16 @@ Public NotInheritable Class Component
                 rowoffset2 = rowoffset + myColumnSize
 
                 If _UseMemoryMappedFile Then
+                    ' only reading the IP From fields
                     overCapacity = (rowoffset2 >= myAccessor.Capacity)
+                    ipfrom = Read32or128(rowoffset, myIPType, myAccessor, myFilestream)
+                    ipto = If(overCapacity, BigInteger.Zero, Read32or128(rowoffset2, myIPType, myAccessor, myFilestream))
+                Else
+                    ' reading IP From + whole row + next IP From
+                    fullRow = ReadRow(rowoffset, myColumnSize + firstCol, myAccessor, myFilestream)
+                    ipfrom = Read32Or128Row(fullRow, 0, firstCol)
+                    ipto = If(overCapacity, BigInteger.Zero, Read32Or128Row(fullRow, myColumnSize, firstCol))
                 End If
-
-                ipfrom = Read32or128(rowoffset, myIPType, myAccessor, myFilestream)
-                ipto = If(overCapacity, BigInteger.Zero, Read32or128(rowoffset2, myIPType, myAccessor, myFilestream))
 
                 If ipnum >= ipfrom AndAlso ipnum < ipto Then
                     Dim country_short As String = MSG_NOT_SUPPORTED
@@ -574,13 +596,14 @@ Public NotInheritable Class Component
                     Dim addresstype As String = MSG_NOT_SUPPORTED
                     Dim category As String = MSG_NOT_SUPPORTED
 
-                    Dim firstCol As Integer = 4 ' for IPv4, IP From is 4 bytes
-                    If myIPType = 6 Then
-                        firstCol = 16 ' 16 bytes for IPv6
-                    End If
+                    Dim rowLen = myColumnSize - firstCol
 
-                    ' read the row here after the IP From column (remaining columns are all 4 bytes)
-                    Dim row() As Byte = ReadRow(rowoffset + firstCol, myColumnSize - firstCol, myAccessor, myFilestream)
+                    If _UseMemoryMappedFile Then
+                        row = ReadRow(rowoffset + firstCol, rowLen, myAccessor, myFilestream)
+                    Else
+                        ReDim row(rowLen - 1)
+                        Array.Copy(fullRow, firstCol, row, 0, rowLen) ' extract the actual row data
+                    End If
 
                     If COUNTRY_ENABLED Then
                         countrypos = Read32FromRow(row, COUNTRY_POSITION_OFFSET)
@@ -708,6 +731,12 @@ Public NotInheritable Class Component
         Return row
     End Function
 
+    Private Function Read32Or128Row(ByRef row() As Byte, ByVal byteOffset As Integer, ByVal len As Integer) As BigInteger
+        Dim _Byte(len - 1) As Byte
+        Array.Copy(row, byteOffset, _Byte, 0, len)
+        Return New BigInteger(_Byte)
+    End Function
+
     Private Function Read32or128(ByVal _Pos As Long, ByVal _MyIPType As Integer, ByRef MyAccessor As MemoryMappedViewAccessor, ByRef MyFilestream As FileStream) As BigInteger
         If _MyIPType = 4 Then
             Return Read32(_Pos, MyAccessor, MyFilestream)
@@ -738,6 +767,20 @@ Public NotInheritable Class Component
         Return bigRetVal
     End Function
 
+    ' Read 8 bits in header
+    Private Function Read8FromHeader(ByRef row() As Byte, ByVal byteOffset As Integer) As Integer
+        Dim _Byte(0) As Byte ' 1 byte
+        Array.Copy(row, byteOffset, _Byte, 0, 1)
+        Return _Byte(0)
+    End Function
+
+    ' Read 32 bits in header
+    Private Function Read32FromHeader(ByRef row() As Byte, ByVal byteOffset As Integer) As Integer
+        Dim _Byte(3) As Byte ' 4 bytes
+        Array.Copy(row, byteOffset, _Byte, 0, 4)
+        Return BitConverter.ToUInt32(_Byte, 0)
+    End Function
+
     ' Read 32 bits in byte array
     Private Function Read32FromRow(ByRef row() As Byte, ByVal byteOffset As Integer) As BigInteger
         Dim _Byte(3) As Byte ' 4 bytes
@@ -759,22 +802,27 @@ Public NotInheritable Class Component
 
     ' Read string in the database
     Private Function ReadStr(ByVal _Pos As Long, ByRef Myfilestream As FileStream) As String
+        Dim _Size = 256 ' max size Of string field + 1 byte for the position
+        Dim _Data(_Size - 1) As Byte
+
         If _UseMemoryMappedFile Then
-            Dim _Byte1 As Byte
+            Dim _Len As Byte
             Dim _Bytes() As Byte
-            _Pos -= _MapDataOffset
-            _Byte1 = _MapDataAccessor.ReadByte(_Pos)
-            ReDim _Bytes(_Byte1 - 1)
-            _MapDataAccessor.ReadArray(_Pos + 1, _Bytes, 0, _Byte1)
+            _Pos -= _MapDataOffset ' position stored in BIN file is for full file, not just the mapped data segment, so need to minus
+            _MapDataAccessor.ReadArray(Of Byte)(_Pos, _Data, 0, _Size)
+            _Len = _Data(0)
+            ReDim _Bytes(_Len - 1)
+            Array.Copy(_Data, 1, _Bytes, 0, _Len)
             Return Encoding.Default.GetString(_Bytes)
         Else
-            Dim _Bytes(0) As Byte
-            Dim _Bytes2() As Byte
+            Dim _Len As Byte
+            Dim _Bytes() As Byte
             Myfilestream.Seek(_Pos, SeekOrigin.Begin)
-            Myfilestream.Read(_Bytes, 0, 1)
-            ReDim _Bytes2(_Bytes(0) - 1)
-            Myfilestream.Read(_Bytes2, 0, _Bytes(0))
-            Return Encoding.Default.GetString(_Bytes2)
+            Myfilestream.Read(_Data, 0, _Size)
+            _Len = _Data(0)
+            ReDim _Bytes(_Len - 1)
+            Array.Copy(_Data, 1, _Bytes, 0, _Len)
+            Return Encoding.Default.GetString(_Bytes)
         End If
     End Function
 
