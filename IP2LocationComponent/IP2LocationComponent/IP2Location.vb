@@ -433,7 +433,8 @@ Public NotInheritable Class Component
                     End If
                 End If
             Catch ex As Exception
-                _MetaData = Nothing ' reset if encounter any exception
+                Close() ' reset if encounter any exception
+                Throw ex
             End Try
         End SyncLock
         Return loadOK
