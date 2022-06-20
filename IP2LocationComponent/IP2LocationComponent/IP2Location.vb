@@ -798,7 +798,7 @@ Public NotInheritable Class Component
 
     ' Read string in the database
     Private Function ReadStr(ByVal _Pos As Long, ByRef Myfilestream As FileStream) As String
-        Dim _Size = 256 ' max size Of string field + 1 byte for the position
+        Dim _Size = 256 ' max size Of string field + 1 byte for the length
         Dim _Data(_Size - 1) As Byte
 
         If _UseMemoryMappedFile Then
