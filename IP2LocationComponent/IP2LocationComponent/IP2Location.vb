@@ -728,7 +728,7 @@ Public NotInheritable Class Component
     End Function
 
     Private Function Read32Or128Row(ByRef row() As Byte, ByVal byteOffset As Integer, ByVal len As Integer) As BigInteger
-        Dim _Byte(len - 1) As Byte
+        Dim _Byte(len) As Byte ' extra 1 zero byte at the end is for making the BigInteger unsigned
         Array.Copy(row, byteOffset, _Byte, 0, len)
         Return New BigInteger(_Byte)
     End Function
@@ -798,7 +798,7 @@ Public NotInheritable Class Component
 
     ' Read string in the database
     Private Function ReadStr(ByVal _Pos As Long, ByRef Myfilestream As FileStream) As String
-        Dim _Size = 256 ' max size Of string field + 1 byte for the length
+        Dim _Size = 256 ' max size of string field + 1 byte for the length
         Dim _Data(_Size - 1) As Byte
 
         If _UseMemoryMappedFile Then
