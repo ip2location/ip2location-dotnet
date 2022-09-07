@@ -13,6 +13,7 @@ https://www.ip2location.com/web-service/ip2location
 
 Microsoft .NET 4.72 framework or later.
 Compatible with .NET Core 2.x/3.x SDK.
+Compatible with .NET 5/6.
 
 ## QUERY USING THE BIN FILE
 
