@@ -6,6 +6,16 @@
 ' Copyright (c) 2002-2022 IP2Location.com
 '---------------------------------------------------------------------------
 Public Class IPResult
+    Enum StatusEnum
+        None
+        EMPTY_IP_ADDRESS
+        INVALID_IP_ADDRESS
+        MISSING_FILE
+        IPV6_NOT_SUPPORTED
+        OK
+        IP_ADDRESS_NOT_FOUND
+    End Enum
+
     Dim m_ip As String = "?"
     Dim m_ipno As String = "?"
     Dim m_countrySHORT As String = "?"
@@ -30,7 +40,7 @@ Public Class IPResult
     Dim m_usagetype As String = "?"
     Dim m_addresstype As String = "?"
     Dim m_category As String = "?"
-    Dim m_status As String = "?"
+    Dim m_status As StatusEnum = StatusEnum.None
 
     ' Description: Get/Set the value of IPAddress
     Public Property IPAddress() As String
@@ -273,11 +283,11 @@ Public Class IPResult
     End Property
 
     ' Description: Get/Set the value of Status
-    Public Property Status() As String
+    Public Property Status() As StatusEnum
         Get
             Return m_status
         End Get
-        Set(ByVal Value As String)
+        Set(Value As StatusEnum)
             m_status = Value
         End Set
     End Property
