@@ -24,6 +24,7 @@ Imports System.Net
 Imports System.Text
 Imports System.Numerics
 Imports System.Text.RegularExpressions
+Imports IP2Location.IPResult
 
 <Assembly: Runtime.InteropServices.ComVisible(False)>
 Public NotInheritable Class Component
@@ -477,7 +478,7 @@ Public NotInheritable Class Component
 
         Try
             If myIPAddress = "" OrElse myIPAddress Is Nothing Then
-                obj.Status = "EMPTY_IP_ADDRESS"
+                obj.Status = StatusEnum.EMPTY_IP_ADDRESS
                 Return obj
             End If
 
@@ -485,14 +486,14 @@ Public NotInheritable Class Component
             If strIP <> "Invalid IP" Then
                 myIPAddress = strIP
             Else
-                obj.Status = "INVALID_IP_ADDRESS"
+                obj.Status = StatusEnum.INVALID_IP_ADDRESS
                 Return obj
             End If
 
             ' Read BIN if haven't done so
             If _MetaData Is Nothing Then
                 If Not LoadBIN() Then ' problems reading BIN
-                    obj.Status = "MISSING_FILE"
+                    obj.Status = StatusEnum.MISSING_FILE
                     Return obj
                 End If
             End If
@@ -527,7 +528,7 @@ Public NotInheritable Class Component
                     ' IPv6
                     firstCol = 16 ' IPv6 is 16 bytes
                     If _MetaData.OldBIN Then ' old IPv4-only BIN don't contain IPv6 data
-                        obj.Status = "IPV6_NOT_SUPPORTED"
+                        obj.Status = StatusEnum.IPV6_NOT_SUPPORTED
                         Return obj
                     End If
                     MAX_IP_RANGE = MAX_IPV6_RANGE
@@ -691,7 +692,7 @@ Public NotInheritable Class Component
                     obj.UsageType = usagetype
                     obj.AddressType = addresstype
                     obj.Category = category
-                    obj.Status = MSG_OK
+                    obj.Status = StatusEnum.OK
 
                     Return obj
                 Else
@@ -703,7 +704,7 @@ Public NotInheritable Class Component
                 End If
             End While
 
-            obj.Status = "IP_ADDRESS_NOT_FOUND"
+            obj.Status = StatusEnum.IP_ADDRESS_NOT_FOUND
             Return obj
         Finally
             If myFilestream IsNot Nothing Then
