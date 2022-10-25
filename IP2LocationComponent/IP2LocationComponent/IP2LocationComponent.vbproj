@@ -6,7 +6,7 @@
     <AssemblyName>IP2Location</AssemblyName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>IP2Location.IPGeolocation</PackageId>
-    <Version>8.9.4</Version>
+    <Version>8.10.0</Version>
     <Authors>IP2Location.com</Authors>
     <Company>IP2Location.com</Company>
     <Title>IP2Location Geolocation .NET Component</Title>
@@ -39,7 +39,7 @@ As an alternative, you can also call the IP2Location Web Service using an API ke
     <PackageIcon>ipl-logo-square-128.png</PackageIcon>
     <PackageLicenseFile></PackageLicenseFile>
     <PackageTags>ip2location .net ip geolocation</PackageTags>
-    <PackageReleaseNotes>Updated target frameworks.</PackageReleaseNotes>
+    <PackageReleaseNotes>Added Country class to query country information and Region class to lookup the ISO 3166-2 subdivision code for country code and region name.</PackageReleaseNotes>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>IP2LocationComponent.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
@@ -60,6 +60,7 @@ As an alternative, you can also call the IP2Location Web Service using an API ke
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="29.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 

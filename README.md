@@ -338,3 +338,75 @@ Console.WriteLine(stuff.IPStart)
 Console.WriteLine(stuff.IPEnd)
 
 ```
+
+## COUNTRY CLASS
+
+## Methods
+Below are the methods supported in this class.
+
+|Method Name|Description|
+|---|---|
+|Constructor(CSVFile)|Expect a IP2Location Country Information CSV file. This database is free for download at https://www.ip2location.com/free/country-information|
+|GetCountryInfo(CountryCode)|Returns the country information.|
+|GetCountryInfo()|Returns all countrys' information.|
+
+## Usage
+
+```vb.net
+Dim cc = New IP2Location.Country("C:\myfolder\IP2LOCATION-COUNTRY-INFORMATION.CSV")
+Dim records = cc.GetCountryInfo()
+For Each x In records
+	Console.WriteLine("country_code: " & x.country_code)
+	Console.WriteLine("country_name: " & x.country_name)
+	Console.WriteLine("country_alpha3_code: " & x.country_alpha3_code)
+	Console.WriteLine("country_numeric_code: " & x.country_numeric_code)
+	Console.WriteLine("capital: " & x.capital)
+	Console.WriteLine("country_demonym: " & x.country_demonym)
+	Console.WriteLine("total_area: " & x.total_area)
+	Console.WriteLine("population: " & x.population)
+	Console.WriteLine("idd_code: " & x.idd_code)
+	Console.WriteLine("currency_code: " & x.currency_code)
+	Console.WriteLine("currency_name: " & x.currency_name)
+	Console.WriteLine("currency_symbol: " & x.currency_symbol)
+	Console.WriteLine("lang_code: " & x.lang_code)
+	Console.WriteLine("lang_name: " & x.lang_name)
+	Console.WriteLine("cctld: " & x.cctld)
+	Console.WriteLine("=======================================================")
+Next
+Dim record = cc.GetCountryInfo("US")
+If record IsNot Nothing Then
+	Console.WriteLine("country_code: " & record.country_code)
+	Console.WriteLine("country_name: " & record.country_name)
+	Console.WriteLine("country_alpha3_code: " & record.country_alpha3_code)
+	Console.WriteLine("country_numeric_code: " & record.country_numeric_code)
+	Console.WriteLine("capital: " & record.capital)
+	Console.WriteLine("country_demonym: " & record.country_demonym)
+	Console.WriteLine("total_area: " & record.total_area)
+	Console.WriteLine("population: " & record.population)
+	Console.WriteLine("idd_code: " & record.idd_code)
+	Console.WriteLine("currency_code: " & record.currency_code)
+	Console.WriteLine("currency_name: " & record.currency_name)
+	Console.WriteLine("currency_symbol: " & record.currency_symbol)
+	Console.WriteLine("lang_code: " & record.lang_code)
+	Console.WriteLine("lang_name: " & record.lang_name)
+	Console.WriteLine("cctld: " & record.cctld)
+End If
+```
+
+## REGION CLASS
+
+## Methods
+Below are the methods supported in this class.
+
+|Method Name|Description|
+|---|---|
+|Constructor(CSVFile)|Expect a IP2Location ISO 3166-2 Subdivision Code CSV file. This database is free for download at https://www.ip2location.com/free/iso3166-2|
+|GetRegionCode(CountryCode, RegionName)|Returns the region code for the supplied country code and region name.|
+
+## Usage
+
+```vb.net
+Dim reg = New IP2Location.Region("C:\myfolder\IP2LOCATION-ISO3166-2.CSV")
+Dim regioncode = reg.GetRegionCode("US", "California")
+Console.WriteLine(regioncode)
+```
