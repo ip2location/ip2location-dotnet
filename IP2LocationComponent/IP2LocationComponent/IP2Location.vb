@@ -15,7 +15,7 @@
 ' URL          : http://www.ip2location.com
 ' Email        : sales@ip2location.com
 '
-' Copyright (c) 2002-2022 IP2Location.com
+' Copyright (c) 2002-2023 IP2Location.com
 '
 '---------------------------------------------------------------------------
 Imports System.IO
@@ -67,27 +67,30 @@ Public NotInheritable Class Component
     Private Const MSG_INVALID_BIN As String = "Incorrect IP2Location BIN file format. Please make sure that you are using the latest IP2Location BIN file."
     Private Const MSG_NOT_SUPPORTED As String = "This method is not applicable for current IP2Location binary data file. Please upgrade your subscription package to install new data file."
 
-    Private ReadOnly COUNTRY_POSITION() As Byte = {0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}
-    Private ReadOnly REGION_POSITION() As Byte = {0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3}
-    Private ReadOnly CITY_POSITION() As Byte = {0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4}
-    Private ReadOnly ISP_POSITION() As Byte = {0, 0, 3, 0, 5, 0, 7, 5, 7, 0, 8, 0, 9, 0, 9, 0, 9, 0, 9, 7, 9, 0, 9, 7, 9, 9}
-    Private ReadOnly LATITUDE_POSITION() As Byte = {0, 0, 0, 0, 0, 5, 5, 0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5}
-    Private ReadOnly LONGITUDE_POSITION() As Byte = {0, 0, 0, 0, 0, 6, 6, 0, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6}
-    Private ReadOnly DOMAIN_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 6, 8, 0, 9, 0, 10, 0, 10, 0, 10, 0, 10, 8, 10, 0, 10, 8, 10, 10}
-    Private ReadOnly ZIPCODE_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 7, 0, 7, 7, 7, 0, 7, 0, 7, 7, 7, 0, 7, 7}
-    Private ReadOnly TIMEZONE_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 8, 7, 8, 8, 8, 7, 8, 0, 8, 8, 8, 0, 8, 8}
-    Private ReadOnly NETSPEED_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 11, 0, 11, 8, 11, 0, 11, 0, 11, 0, 11, 11}
-    Private ReadOnly IDDCODE_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 12, 0, 12, 0, 12, 9, 12, 0, 12, 12}
-    Private ReadOnly AREACODE_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 13, 0, 13, 0, 13, 10, 13, 0, 13, 13}
-    Private ReadOnly WEATHERSTATIONCODE_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 14, 0, 14, 0, 14, 0, 14, 14}
-    Private ReadOnly WEATHERSTATIONNAME_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 15, 0, 15, 0, 15, 0, 15, 15}
-    Private ReadOnly MCC_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 16, 0, 16, 9, 16, 16}
-    Private ReadOnly MNC_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 17, 0, 17, 10, 17, 17}
-    Private ReadOnly MOBILEBRAND_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 18, 0, 18, 11, 18, 18}
-    Private ReadOnly ELEVATION_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 19, 0, 19, 19}
-    Private ReadOnly USAGETYPE_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 20, 20}
-    Private ReadOnly ADDRESSTYPE_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21}
-    Private ReadOnly CATEGORY_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 22}
+    Private ReadOnly COUNTRY_POSITION() As Byte = {0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}
+    Private ReadOnly REGION_POSITION() As Byte = {0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3}
+    Private ReadOnly CITY_POSITION() As Byte = {0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4}
+    Private ReadOnly ISP_POSITION() As Byte = {0, 0, 3, 0, 5, 0, 7, 5, 7, 0, 8, 0, 9, 0, 9, 0, 9, 0, 9, 7, 9, 0, 9, 7, 9, 9, 9}
+    Private ReadOnly LATITUDE_POSITION() As Byte = {0, 0, 0, 0, 0, 5, 5, 0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5}
+    Private ReadOnly LONGITUDE_POSITION() As Byte = {0, 0, 0, 0, 0, 6, 6, 0, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6}
+    Private ReadOnly DOMAIN_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 6, 8, 0, 9, 0, 10, 0, 10, 0, 10, 0, 10, 8, 10, 0, 10, 8, 10, 10, 10}
+    Private ReadOnly ZIPCODE_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 7, 0, 7, 7, 7, 0, 7, 0, 7, 7, 7, 0, 7, 7, 7}
+    Private ReadOnly TIMEZONE_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 8, 7, 8, 8, 8, 7, 8, 0, 8, 8, 8, 0, 8, 8, 8}
+    Private ReadOnly NETSPEED_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 11, 0, 11, 8, 11, 0, 11, 0, 11, 0, 11, 11, 11}
+    Private ReadOnly IDDCODE_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 12, 0, 12, 0, 12, 9, 12, 0, 12, 12, 12}
+    Private ReadOnly AREACODE_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 13, 0, 13, 0, 13, 10, 13, 0, 13, 13, 13}
+    Private ReadOnly WEATHERSTATIONCODE_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 14, 0, 14, 0, 14, 0, 14, 14, 14}
+    Private ReadOnly WEATHERSTATIONNAME_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 15, 0, 15, 0, 15, 0, 15, 15, 15}
+    Private ReadOnly MCC_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 16, 0, 16, 9, 16, 16, 16}
+    Private ReadOnly MNC_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 17, 0, 17, 10, 17, 17, 17}
+    Private ReadOnly MOBILEBRAND_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 18, 0, 18, 11, 18, 18, 18}
+    Private ReadOnly ELEVATION_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 19, 0, 19, 19, 19}
+    Private ReadOnly USAGETYPE_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 20, 20, 20}
+    Private ReadOnly ADDRESSTYPE_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21, 21}
+    Private ReadOnly CATEGORY_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 22, 22}
+    Private ReadOnly DISTRICT_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 23}
+    Private ReadOnly ASN_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24}
+    Private ReadOnly AS_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 25}
 
     Private COUNTRY_POSITION_OFFSET As Integer = 0
     Private REGION_POSITION_OFFSET As Integer = 0
@@ -110,6 +113,9 @@ Public NotInheritable Class Component
     Private USAGETYPE_POSITION_OFFSET As Integer = 0
     Private ADDRESSTYPE_POSITION_OFFSET As Integer = 0
     Private CATEGORY_POSITION_OFFSET As Integer = 0
+    Private DISTRICT_POSITION_OFFSET As Integer = 0
+    Private ASN_POSITION_OFFSET As Integer = 0
+    Private AS_POSITION_OFFSET As Integer = 0
 
     Private COUNTRY_ENABLED As Boolean = False
     Private REGION_ENABLED As Boolean = False
@@ -132,6 +138,9 @@ Public NotInheritable Class Component
     Private USAGETYPE_ENABLED As Boolean = False
     Private ADDRESSTYPE_ENABLED As Boolean = False
     Private CATEGORY_ENABLED As Boolean = False
+    Private DISTRICT_ENABLED As Boolean = False
+    Private ASN_ENABLED As Boolean = False
+    Private AS_ENABLED As Boolean = False
 
     ' Description: Gets or sets whether to use memory mapped file instead of filestream
     Public Property UseMemoryMappedFile() As Boolean
@@ -367,6 +376,9 @@ Public NotInheritable Class Component
                             USAGETYPE_POSITION_OFFSET = If(USAGETYPE_POSITION(dbt) <> 0, (USAGETYPE_POSITION(dbt) - 2) << 2, 0)
                             ADDRESSTYPE_POSITION_OFFSET = If(ADDRESSTYPE_POSITION(dbt) <> 0, (ADDRESSTYPE_POSITION(dbt) - 2) << 2, 0)
                             CATEGORY_POSITION_OFFSET = If(CATEGORY_POSITION(dbt) <> 0, (CATEGORY_POSITION(dbt) - 2) << 2, 0)
+                            DISTRICT_POSITION_OFFSET = If(DISTRICT_POSITION(dbt) <> 0, (DISTRICT_POSITION(dbt) - 2) << 2, 0)
+                            ASN_POSITION_OFFSET = If(ASN_POSITION(dbt) <> 0, (ASN_POSITION(dbt) - 2) << 2, 0)
+                            AS_POSITION_OFFSET = If(AS_POSITION(dbt) <> 0, (AS_POSITION(dbt) - 2) << 2, 0)
 
                             COUNTRY_ENABLED = COUNTRY_POSITION(dbt) <> 0
                             REGION_ENABLED = REGION_POSITION(dbt) <> 0
@@ -389,6 +401,9 @@ Public NotInheritable Class Component
                             USAGETYPE_ENABLED = USAGETYPE_POSITION(dbt) <> 0
                             ADDRESSTYPE_ENABLED = ADDRESSTYPE_POSITION(dbt) <> 0
                             CATEGORY_ENABLED = CATEGORY_POSITION(dbt) <> 0
+                            DISTRICT_ENABLED = DISTRICT_POSITION(dbt) <> 0
+                            ASN_ENABLED = ASN_POSITION(dbt) <> 0
+                            AS_ENABLED = AS_POSITION(dbt) <> 0
 
                             If .Indexed Then
                                 Dim readLen = _IndexArrayIPv4.GetLength(0)
@@ -591,6 +606,9 @@ Public NotInheritable Class Component
                     Dim usagetype As String = MSG_NOT_SUPPORTED
                     Dim addresstype As String = MSG_NOT_SUPPORTED
                     Dim category As String = MSG_NOT_SUPPORTED
+                    Dim district As String = MSG_NOT_SUPPORTED
+                    Dim asn As String = MSG_NOT_SUPPORTED
+                    Dim [as] As String = MSG_NOT_SUPPORTED
 
                     Dim rowLen = myColumnSize - firstCol
 
@@ -666,6 +684,15 @@ Public NotInheritable Class Component
                     If CATEGORY_ENABLED Then
                         category = ReadStr(Read32FromRow(row, CATEGORY_POSITION_OFFSET), myFilestream)
                     End If
+                    If DISTRICT_ENABLED Then
+                        district = ReadStr(Read32FromRow(row, DISTRICT_POSITION_OFFSET), myFilestream)
+                    End If
+                    If ASN_ENABLED Then
+                        asn = ReadStr(Read32FromRow(row, ASN_POSITION_OFFSET), myFilestream)
+                    End If
+                    If AS_ENABLED Then
+                        [as] = ReadStr(Read32FromRow(row, AS_POSITION_OFFSET), myFilestream)
+                    End If
 
                     obj.IPAddress = myIPAddress
                     obj.IPNumber = ipnum.ToString()
@@ -691,6 +718,9 @@ Public NotInheritable Class Component
                     obj.UsageType = usagetype
                     obj.AddressType = addresstype
                     obj.Category = category
+                    obj.District = district
+                    obj.ASN = asn
+                    obj.AS = [as]
                     obj.Status = MSG_OK
 
                     Return obj

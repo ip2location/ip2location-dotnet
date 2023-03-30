@@ -1,6 +1,6 @@
 # IP2Location IP Geolocation .NET Component
 
-This IP Geolocation .NET component allows user to query an IP address for useful IP geolocation information such as the ISO3166 country code, country name, region or state, city, latitude and longitude, ZIP/Postal code, time zone, Internet Service Provider (ISP) or company name, domain name, net speed, area code, weather station code, weather station name, mobile country code (MCC), mobile network code (MNC) and carrier brand, elevation, usage type, address type and IAB category. It lookup the IP address from **IP2Location BIN Data** file. This data file can be downloaded at
+This IP Geolocation .NET component allows user to query an IP address for useful IP geolocation information such as the ISO3166 country code, country name, region or state, city, latitude and longitude, ZIP/Postal code, time zone, Internet Service Provider (ISP) or company name, domain name, net speed, area code, weather station code, weather station name, mobile country code (MCC), mobile network code (MNC) and carrier brand, elevation, usage type, address type, IAB category, district, autonomous system number (ASN) and autonomous system (AS). It lookup the IP address from **IP2Location BIN Data** file. This data file can be downloaded at
 
 * Free IP2Location IP Geolocation BIN Data: https://lite.ip2location.com
 * Commercial IP2Location IP Geolocation BIN Data: https://www.ip2location.com/database/ip2location
@@ -13,7 +13,7 @@ https://www.ip2location.com/web-service/ip2location
 
 Microsoft .NET 4.72 framework or later.
 Compatible with .NET Core 2.x/3.x SDK.
-Compatible with .NET 5/6.
+Compatible with .NET 5/6/7.
 
 ## QUERY USING THE BIN FILE
 
@@ -64,6 +64,9 @@ Below are the result fields.
 |UsageType|Usage type classification of ISP or company:<ul><li>(COM) Commercial</li><li>(ORG) Organization</li><li>(GOV) Government</li><li>(MIL) Military</li><li>(EDU) University/College/School</li><li>(LIB) Library</li><li>(CDN) Content Delivery Network</li><li>(ISP) Fixed Line ISP</li><li>(MOB) Mobile ISP</li><li>(DCH) Data Center/Web Hosting/Transit</li><li>(SES) Search Engine Spider</li><li>(RSV) Reserved</li></ul>|
 |AddressType|IP address types as defined in Internet Protocol version 4 (IPv4) and Internet Protocol version 6 (IPv6).<ul><li>(A) Anycast - One to the closest</li><li>(U) Unicast - One to one</li><li>(M) Multicast - One to multiple</li><li>(B) Broadcast - One to all</li></ul>|
 |Category|The domain category is based on [IAB Tech Lab Content Taxonomy](https://www.ip2location.com/free/iab-categories). These categories are comprised of Tier-1 and Tier-2 (if available) level categories widely used in services like advertising, Internet security and filtering appliances.|
+|District|The district name.|
+|ASN|Autonomous system number.|
+|AS|Autonomous system.|
 
 ## Status codes
 Below are the status codes.
@@ -84,7 +87,7 @@ Dim oIP2Location As New IP2Location.Component
 Try
 	Dim strIPAddress = "8.8.8.8"
 	If strIPAddress.Trim <> "" Then
-		oIP2Location.Open("C:\myfolder\IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ZIPCODE-TIMEZONE-ISP-DOMAIN-NETSPEED-AREACODE-WEATHER-MOBILE-ELEVATION-USAGETYPE-ADDRESSTYPE-CATEGORY.BIN", True)
+		oIP2Location.Open("C:\myfolder\IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ZIPCODE-TIMEZONE-ISP-DOMAIN-NETSPEED-AREACODE-WEATHER-MOBILE-ELEVATION-USAGETYPE-ADDRESSTYPE-CATEGORY-DISTRICT-ASN.BIN", True)
 		oIPResult = oIP2Location.IPQuery(strIPAddress)
 		Select Case oIPResult.Status
 			Case "OK"
@@ -111,6 +114,9 @@ Try
 				Console.WriteLine("Usage Type: " & oIPResult.UsageType)
 				Console.WriteLine("Address Type: " & oIPResult.AddressType)
 				Console.WriteLine("Category: " & oIPResult.Category)
+				Console.WriteLine("District: " & oIPResult.District)
+				Console.WriteLine("ASN: " & oIPResult.ASN)
+				Console.WriteLine("AS: " & oIPResult.AS)
 			Case "EMPTY_IP_ADDRESS"
 				Console.WriteLine("IP Address cannot be blank.")
 			Case "INVALID_IP_ADDRESS"

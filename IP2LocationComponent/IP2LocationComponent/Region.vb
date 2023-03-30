@@ -3,7 +3,7 @@
 ' URL          : http://www.ip2location.com
 ' Email        : sales@ip2location.com
 '
-' Copyright (c) 2002-2022 IP2Location.com
+' Copyright (c) 2002-2023 IP2Location.com
 '---------------------------------------------------------------------------
 Imports System.Globalization
 Imports System.IO
