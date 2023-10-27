@@ -17,21 +17,15 @@ Compatible with .NET 5/6/7.
 
 ## QUERY USING THE BIN FILE
 
-## Parameters
-Below are the parameters to set before using this class.
-
-|Parameter Name|Description|
-|---|---|
-|IPDatabasePath|Sets the IP2Location database path.|
-|UseMemoryMappedFile|Set to True to enable memory mapped file feature. This will increase query speed but require more memory. It is set to False by default.|
-
 ## Methods
 Below are the methods supported in this class.
 
 |Method Name|Description|
 |---|---|
-|Open(ByVal DBPath As String, Optional ByVal UseMMF As Boolean = False)|Initialize component and preload BIN file.|
-|IPQuery(ByVal _IPAddress As String)|Query IP address. This method returns results in IP2Location.IPResult object.|
+|Open(DBPath As String, Optional UseMMF As Boolean = False)|Initialize component with BIN database file path and whether to use MemoryMappedFile then preload BIN file.|
+|Open(DBStream As Stream)|Initialize component with a stream that contains the BIN database then preload BIN file.|
+|IPQuery(_IPAddress As String)|Query IP address. This method returns results in IP2Location.IPResult object.|
+|IPQueryAsync(_IPAddress As String)|Query IP address asynchronously. This method returns results in a Task object containing the IP2Location.IPResult object.|
 |Close()|Destroy memory accessors & memory mapped file (only use in specific cases, otherwise don't use).|
 
 ## Result fields
@@ -79,7 +73,7 @@ Below are the status codes.
 |IP_ADDRESS_NOT_FOUND|The IP address does not exists in the BIN file.|
 |IPV6_NOT_SUPPORTED|The BIN file does not contain IPv6 data.|
 
-## Usage
+## Usage using DB file path
 
 ```vb.net
 Dim oIPResult As New IP2Location.IPResult
@@ -124,6 +118,69 @@ Try
 			Case "MISSING_FILE"
 				Console.WriteLine("Invalid Database Path.")
 		End Select
+	Else
+		Console.WriteLine("IP Address cannot be blank.")
+	End If
+Catch ex As Exception
+	Console.WriteLine(ex.Message)
+Finally
+	oIP2Location.Close()
+	oIPResult = Nothing
+	oIP2Location = Nothing
+End Try
+
+```
+
+## Usage using a stream and async IP query
+
+```vb.net
+Dim oIPResult As New IP2Location.IPResult
+Dim oIP2Location As New IP2Location.Component
+Try
+	Dim strIPAddress = "8.8.8.8"
+	If strIPAddress.Trim <> "" Then
+		Using myStream As New FileStream("C:\myfolder\IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ZIPCODE-TIMEZONE-ISP-DOMAIN-NETSPEED-AREACODE-WEATHER-MOBILE-ELEVATION-USAGETYPE-ADDRESSTYPE-CATEGORY-DISTRICT-ASN.BIN", FileMode.Open, FileAccess.Read, FileShare.Read)
+			oIP2Location.Open(myStream)
+			Dim myTask = oIP2Location.IPQueryAsync(strIPAddress)
+			oIPResult = myTask.Result
+			Select Case oIPResult.Status
+				Case "OK"
+					Console.WriteLine("IP Address: " & oIPResult.IPAddress)
+					Console.WriteLine("Country Code: " & oIPResult.CountryShort)
+					Console.WriteLine("Country Name: " & oIPResult.CountryLong)
+					Console.WriteLine("Region: " & oIPResult.Region)
+					Console.WriteLine("City: " & oIPResult.City)
+					Console.WriteLine("Latitude: " & oIPResult.Latitude)
+					Console.WriteLine("Longitude: " & oIPResult.Longitude)
+					Console.WriteLine("Postal Code: " & oIPResult.ZipCode)
+					Console.WriteLine("TimeZone: " & oIPResult.TimeZone)
+					Console.WriteLine("ISP Name: " & oIPResult.InternetServiceProvider)
+					Console.WriteLine("Domain Name: " & oIPResult.DomainName)
+					Console.WriteLine("NetSpeed: " & oIPResult.NetSpeed)
+					Console.WriteLine("IDD Code: " & oIPResult.IDDCode)
+					Console.WriteLine("Area Code: " & oIPResult.AreaCode)
+					Console.WriteLine("Weather Station Code: " & oIPResult.WeatherStationCode)
+					Console.WriteLine("Weather Station Name: " & oIPResult.WeatherStationName)
+					Console.WriteLine("MCC: " & oIPResult.MCC)
+					Console.WriteLine("MNC: " & oIPResult.MNC)
+					Console.WriteLine("Mobile Brand: " & oIPResult.MobileBrand)
+					Console.WriteLine("Elevation: " & oIPResult.Elevation)
+					Console.WriteLine("Usage Type: " & oIPResult.UsageType)
+					Console.WriteLine("Address Type: " & oIPResult.AddressType)
+					Console.WriteLine("Category: " & oIPResult.Category)
+					Console.WriteLine("District: " & oIPResult.District)
+					Console.WriteLine("ASN: " & oIPResult.ASN)
+					Console.WriteLine("AS: " & oIPResult.AS)
+				Case "EMPTY_IP_ADDRESS"
+					Console.WriteLine("IP Address cannot be blank.")
+				Case "INVALID_IP_ADDRESS"
+					Console.WriteLine("Invalid IP Address.")
+				Case "MISSING_FILE"
+					Console.WriteLine("Invalid Database Path.")
+				Case Else
+					Console.WriteLine(oIPResult.Status)
+			End Select
+		End Using
 	Else
 		Console.WriteLine("IP Address cannot be blank.")
 	End If

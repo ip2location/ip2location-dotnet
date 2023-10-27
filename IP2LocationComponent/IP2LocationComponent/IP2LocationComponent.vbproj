@@ -6,7 +6,7 @@
     <AssemblyName>IP2Location</AssemblyName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>IP2Location.IPGeolocation</PackageId>
-    <Version>8.11.0</Version>
+    <Version>9.0.0</Version>
     <Authors>IP2Location.com</Authors>
     <Company>IP2Location.com</Company>
     <Title>IP2Location Geolocation .NET Component</Title>
@@ -42,7 +42,7 @@ As an alternative, you can also call the IP2Location Web Service using an API ke
     <PackageIcon>ipl-logo-square-128.png</PackageIcon>
     <PackageLicenseFile></PackageLicenseFile>
     <PackageTags>ip2location .net ip geolocation</PackageTags>
-    <PackageReleaseNotes>Added support for district, autonomous system number (ASN) and autonomous system (AS).</PackageReleaseNotes>
+    <PackageReleaseNotes>Added support for querying a stream object containing the BIN database and added async query function.</PackageReleaseNotes>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>IP2LocationComponent.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
