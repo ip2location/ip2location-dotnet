@@ -9,7 +9,7 @@ Imports System.Net
 Imports System.Text
 
 Public Class Http
-    Public Function GetMethod(ByVal url As String) As String
+    Public Function GetMethod(url As String) As String
         Dim request As HttpWebRequest
         Dim response As HttpWebResponse
         request = WebRequest.Create(url)
@@ -23,7 +23,7 @@ Public Class Http
             Return ("Failed : HTTP error code :" & response.StatusCode)
         End If
     End Function
-    Public Function PostMethod(ByVal url As String, post As String) As String
+    Public Function PostMethod(url As String, post As String) As String
         Dim request As HttpWebRequest
         Dim response As HttpWebResponse
         Dim encode As UTF8Encoding

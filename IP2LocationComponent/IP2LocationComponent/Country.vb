@@ -14,7 +14,7 @@ Public Class Country
     Private resultsList As List(Of CountryInfo)
 
     ' Description: Parses the country information CSV and stores the data
-    Public Sub New(ByVal CSVFile As String)
+    Public Sub New(CSVFile As String)
         If Not File.Exists(CSVFile) Then
             Throw New Exception("The CSV file '" & CSVFile & "' is not found.")
         End If
@@ -40,7 +40,7 @@ Public Class Country
     End Sub
 
     ' Get country information for the supplied country code
-    Public Function GetCountryInfo(ByVal CountryCode As String) As CountryInfo
+    Public Function GetCountryInfo(CountryCode As String) As CountryInfo
         If resultsDict.Count = 0 Then
             Throw New Exception("No record available.")
         End If

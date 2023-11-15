@@ -10,10 +10,10 @@ Imports System.IO
 Imports CsvHelper
 
 Public Class Region
-    Private resultsDict As Dictionary(Of String, List(Of RegionInfo))
+    Private ReadOnly resultsDict As Dictionary(Of String, List(Of RegionInfo))
 
     ' Description: Parses the region information CSV and stores the data
-    Public Sub New(ByVal CSVFile As String)
+    Public Sub New(CSVFile As String)
         If Not File.Exists(CSVFile) Then
             Throw New Exception("The CSV file '" & CSVFile & "' is not found.")
         End If
@@ -41,7 +41,7 @@ Public Class Region
     End Sub
 
     ' Get region code for the supplied country code and region name
-    Public Function GetRegionCode(ByVal CountryCode As String, ByVal RegionName As String) As String
+    Public Function GetRegionCode(CountryCode As String, RegionName As String) As String
         If resultsDict.Count = 0 Then
             Throw New Exception("No record available.")
         End If

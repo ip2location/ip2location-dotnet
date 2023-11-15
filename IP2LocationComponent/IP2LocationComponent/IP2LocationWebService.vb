@@ -35,7 +35,7 @@ Public NotInheritable Class ComponentWebService
     End Sub
 
     ' Description: Set the API key and package for the queries
-    Public Sub Open(ByVal APIKey As String, ByVal Package As String, ByVal Optional UseSSL As Boolean = True)
+    Public Sub Open(APIKey As String, Package As String, Optional UseSSL As Boolean = True)
         _APIKey = APIKey
         _Package = Package
         _UseSSL = UseSSL
@@ -55,12 +55,12 @@ Public NotInheritable Class ComponentWebService
     End Sub
 
     ' Description: Query web service to get location information by IP address and translations
-    Public Function IPQuery(ByVal IP As String, ByVal Optional Language As String = "en") As JObject
+    Public Function IPQuery(IP As String, Optional Language As String = "en") As JObject
         Return IPQuery(IP, Nothing, Language)
     End Function
 
     ' Description: Query web service to get location information by IP address, addons and translations
-    Public Function IPQuery(ByVal IP As String, ByVal AddOns() As String, ByVal Optional Language As String = "en") As JObject
+    Public Function IPQuery(IP As String, AddOns() As String, Optional Language As String = "en") As JObject
         CheckParams() ' check here in case user haven't called Open yet
 
         Dim url As String

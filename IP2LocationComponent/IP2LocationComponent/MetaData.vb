@@ -31,7 +31,7 @@ Friend Class MetaData
         Get
             Return _BaseAddr
         End Get
-        Set(ByVal Value As Integer)
+        Set(Value As Integer)
             _BaseAddr = Value
         End Set
     End Property
@@ -40,7 +40,7 @@ Friend Class MetaData
         Get
             Return _DBCount
         End Get
-        Set(ByVal Value As Integer)
+        Set(Value As Integer)
             _DBCount = Value
         End Set
     End Property
@@ -49,7 +49,7 @@ Friend Class MetaData
         Get
             Return _DBColumn
         End Get
-        Set(ByVal Value As Integer)
+        Set(Value As Integer)
             _DBColumn = Value
         End Set
     End Property
@@ -58,7 +58,7 @@ Friend Class MetaData
         Get
             Return _DBType
         End Get
-        Set(ByVal Value As Integer)
+        Set(Value As Integer)
             _DBType = Value
         End Set
     End Property
@@ -67,7 +67,7 @@ Friend Class MetaData
         Get
             Return _DBDay
         End Get
-        Set(ByVal Value As Integer)
+        Set(Value As Integer)
             _DBDay = Value
         End Set
     End Property
@@ -76,7 +76,7 @@ Friend Class MetaData
         Get
             Return _DBMonth
         End Get
-        Set(ByVal Value As Integer)
+        Set(Value As Integer)
             _DBMonth = Value
         End Set
     End Property
@@ -85,7 +85,7 @@ Friend Class MetaData
         Get
             Return _DBYear
         End Get
-        Set(ByVal Value As Integer)
+        Set(Value As Integer)
             _DBYear = Value
         End Set
     End Property
@@ -94,7 +94,7 @@ Friend Class MetaData
         Get
             Return _BaseAddrIPv6
         End Get
-        Set(ByVal Value As Integer)
+        Set(Value As Integer)
             _BaseAddrIPv6 = Value
         End Set
     End Property
@@ -103,7 +103,7 @@ Friend Class MetaData
         Get
             Return _DBCountIPv6
         End Get
-        Set(ByVal Value As Integer)
+        Set(Value As Integer)
             _DBCountIPv6 = Value
         End Set
     End Property
@@ -118,7 +118,7 @@ Friend Class MetaData
         Get
             Return _OldBIN
         End Get
-        Set(ByVal Value As Boolean)
+        Set(Value As Boolean)
             _OldBIN = Value
         End Set
     End Property
@@ -127,7 +127,7 @@ Friend Class MetaData
         Get
             Return _Indexed
         End Get
-        Set(ByVal Value As Boolean)
+        Set(Value As Boolean)
             _Indexed = Value
         End Set
     End Property
@@ -136,7 +136,7 @@ Friend Class MetaData
         Get
             Return _IndexedIPv6
         End Get
-        Set(ByVal Value As Boolean)
+        Set(Value As Boolean)
             _IndexedIPv6 = Value
         End Set
     End Property
@@ -145,7 +145,7 @@ Friend Class MetaData
         Get
             Return _IndexBaseAddr
         End Get
-        Set(ByVal Value As Integer)
+        Set(Value As Integer)
             _IndexBaseAddr = Value
         End Set
     End Property
@@ -154,7 +154,7 @@ Friend Class MetaData
         Get
             Return _IndexBaseAddrIPv6
         End Get
-        Set(ByVal Value As Integer)
+        Set(Value As Integer)
             _IndexBaseAddrIPv6 = Value
         End Set
     End Property
@@ -163,7 +163,7 @@ Friend Class MetaData
         Get
             Return _ProductCode
         End Get
-        Set(ByVal Value As Integer)
+        Set(Value As Integer)
             _ProductCode = Value
         End Set
     End Property
@@ -172,7 +172,7 @@ Friend Class MetaData
         Get
             Return _ProductType
         End Get
-        Set(ByVal Value As Integer)
+        Set(Value As Integer)
             _ProductType = Value
         End Set
     End Property
@@ -181,7 +181,7 @@ Friend Class MetaData
         Get
             Return _FileSize
         End Get
-        Set(ByVal Value As Integer)
+        Set(Value As Integer)
             _FileSize = Value
         End Set
     End Property

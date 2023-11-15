@@ -5,7 +5,6 @@
 '
 ' Copyright (c) 2002-2023 IP2Location.com
 '---------------------------------------------------------------------------
-Imports System.IO
 Imports System.Net
 Imports System.Numerics
 Imports System.Text.RegularExpressions
@@ -15,7 +14,7 @@ Public Class IPTools
     Private MAX_IPV6_RANGE As BigInteger = BigInteger.Pow(2, 128) - 1
 
     ' Description: Checks if IP address is IPv6
-    Public Function IsIPv4(ByVal IP As String) As Boolean
+    Public Function IsIPv4(IP As String) As Boolean
         Try
             Dim address As IPAddress = Nothing
 
@@ -35,7 +34,7 @@ Public Class IPTools
     End Function
 
     ' Description: Checks if IP address is IPv6
-    Public Function IsIPv6(ByVal IP As String) As Boolean
+    Public Function IsIPv6(IP As String) As Boolean
         Try
             Dim address As IPAddress = Nothing
 
@@ -88,7 +87,7 @@ Public Class IPTools
     End Function
 
     ' Description: Convert IPv4 into big integer
-    Public Function IPv4ToDecimal(ByVal IP As String) As BigInteger
+    Public Function IPv4ToDecimal(IP As String) As BigInteger
         If IsIPv4(IP) Then
             Return IPNo(IPAddress.Parse(IP))
         Else
@@ -97,7 +96,7 @@ Public Class IPTools
     End Function
 
     ' Description: Convert IPv6 into big integer
-    Public Function IPv6ToDecimal(ByVal IP As String) As BigInteger
+    Public Function IPv6ToDecimal(IP As String) As BigInteger
         If IsIPv6(IP) Then
             Return IPNo(IPAddress.Parse(IP))
         Else
@@ -105,7 +104,7 @@ Public Class IPTools
         End If
     End Function
 
-    Private Function NumToIPv4(ByVal IPNum As BigInteger) As String
+    Private Function NumToIPv4(IPNum As BigInteger) As String
         Dim result As String
         Dim arr As Byte()
         Dim str(3) As String
@@ -135,7 +134,7 @@ Public Class IPTools
     End Function
 
     ' Description: Convert big integer into IPv4
-    Public Function DecimalToIPv4(ByVal IPNum As BigInteger) As String
+    Public Function DecimalToIPv4(IPNum As BigInteger) As String
         If IPNum < 0 OrElse IPNum > MAX_IPV4_RANGE Then
             Return Nothing
         Else
@@ -143,7 +142,7 @@ Public Class IPTools
         End If
     End Function
 
-    Private Function NumToIPv6(ByVal IPNum As BigInteger) As String
+    Private Function NumToIPv6(IPNum As BigInteger) As String
         Dim result As String = ""
         Dim arr As Byte()
         Dim str(7) As String
@@ -175,7 +174,7 @@ Public Class IPTools
     End Function
 
     ' Description: Convert big integer into IPv6
-    Public Function DecimalToIPv6(ByVal IPNum As BigInteger) As String
+    Public Function DecimalToIPv6(IPNum As BigInteger) As String
         If IPNum < 0 OrElse IPNum > MAX_IPV6_RANGE Then
             Return Nothing
         Else
@@ -184,7 +183,7 @@ Public Class IPTools
     End Function
 
     ' Description: Convert IPv6 into compressed form
-    Public Function CompressIPv6(ByVal IP As String) As String
+    Public Function CompressIPv6(IP As String) As String
         Try
             Dim address As IPAddress = Nothing
             If IsIPv6(IP) Then
@@ -199,7 +198,7 @@ Public Class IPTools
     End Function
 
     ' Description: Convert IPv6 into expanded form
-    Public Function ExpandIPv6(ByVal IP As String) As String
+    Public Function ExpandIPv6(IP As String) As String
         Try
             Dim address As IPAddress = Nothing
             Dim result As String = ""
@@ -225,7 +224,7 @@ Public Class IPTools
     End Function
 
     ' Description: Convert IPv4 range into CIDR
-    Public Function IPv4ToCIDR(ByVal IPFrom As String, ByVal IPTo As String) As List(Of String)
+    Public Function IPv4ToCIDR(IPFrom As String, IPTo As String) As List(Of String)
         If Not IsIPv4(IPFrom) OrElse Not IsIPv4(IPTo) Then
             Return Nothing
         End If
@@ -263,12 +262,12 @@ Public Class IPTools
         Return result
     End Function
 
-    Private Function IPv4Mask(ByVal s As Integer) As Long
+    Private Function IPv4Mask(s As Integer) As Long
         Return Math.Pow(2, 32) - Math.Pow(2, 32 - s)
     End Function
 
     ' Description: Convert IPv6 range into CIDR
-    Public Function IPv6ToCIDR(ByVal IPFrom As String, ByVal IPTo As String) As List(Of String)
+    Public Function IPv6ToCIDR(IPFrom As String, IPTo As String) As List(Of String)
         If Not IsIPv6(IPFrom) OrElse Not IsIPv6(IPTo) Then
             Return Nothing
         End If
@@ -343,7 +342,7 @@ Public Class IPTools
     End Function
 
     ' Description: Convert IPv6 into binary string representation
-    Private Function IPToBinary(ByVal IP As String) As String
+    Private Function IPToBinary(IP As String) As String
         If IsIPv6(IP) Then
             Dim address As IPAddress
             address = IPAddress.Parse(IP)
@@ -362,7 +361,7 @@ Public Class IPTools
     End Function
 
     ' Description: Convert binary string representation into IPv6
-    Private Function BinaryToIP(ByVal Binary As String) As String
+    Private Function BinaryToIP(Binary As String) As String
         If Not Regex.Match(Binary, "^([01]{8})+$").Success OrElse Binary.Length <> 128 Then
             Return Nothing
         End If
@@ -380,7 +379,7 @@ Public Class IPTools
     End Function
 
     ' Description: Convert CIDR into IPv4 range
-    Public Function CIDRToIPv4(ByVal CIDR As String) As (IPStart As String, IPEnd As String)
+    Public Function CIDRToIPv4(CIDR As String) As (IPStart As String, IPEnd As String)
         If CIDR.IndexOf("/") = -1 Then
             Return Nothing
         End If
@@ -421,7 +420,7 @@ Public Class IPTools
     End Function
 
     ' Description: Convert CIDR into IPv6 range
-    Public Function CIDRToIPv6(ByVal CIDR As String) As (IPStart As String, IPEnd As String)
+    Public Function CIDRToIPv6(CIDR As String) As (IPStart As String, IPEnd As String)
         If CIDR.IndexOf("/") = -1 Then
             Return Nothing
         End If
@@ -437,29 +436,26 @@ Public Class IPTools
         ip = arr(0)
         prefix = Convert.ToInt64(arr(1))
 
-        Dim hexstartaddress = ExpandIPv6(ip).Replace(":", "")
-        Dim hexlastaddress = hexstartaddress
+        Dim parts = ExpandIPv6(ip).Split(":")
 
-        Dim bits = 128 - prefix
-        Dim x As Integer
-        Dim y As String
-        Dim pos = 31
-        Dim vals = New List(Of Integer)
-        While bits > 0
-            vals.Clear()
-            vals.Add(4)
-            vals.Add(bits)
-            x = Convert.ToInt32(hexlastaddress.Substring(pos, 1), 16)
-            y = (x Or (Math.Pow(2, vals.Min()) - 1)).ToString("x") ' single hex char
+        Dim bitStart = New String("1", prefix) & New String("0", 128 - prefix)
+        Dim bitEnd = New String("0", prefix) & New String("1", 128 - prefix)
 
-            hexlastaddress = hexlastaddress.Remove(pos, 1).Insert(pos, y)
+        Dim floors As List(Of String) = (From m As Match In Regex.Matches(bitStart, ".{16}")
+                                         Select m.Value).ToList()
+        Dim ceilings As List(Of String) = (From m As Match In Regex.Matches(bitEnd, ".{16}")
+                                           Select m.Value).ToList()
 
-            bits -= 4
-            pos -= 1
-        End While
+        Dim startip = New List(Of String)
+        Dim endip = New List(Of String)
 
-        hexstartaddress = Regex.Replace(hexstartaddress, ".{4}", "$0:").TrimEnd(":")
-        hexlastaddress = Regex.Replace(hexlastaddress, ".{4}", "$0:").TrimEnd(":")
+        For x As Integer = 0 To 7
+            startip.Add((Convert.ToInt32(parts(x), 16) And Convert.ToInt32(floors(x), 2)).ToString("X"))
+            endip.Add((Convert.ToInt32(parts(x), 16) Or Convert.ToInt32(ceilings(x), 2)).ToString("X"))
+        Next
+
+        Dim hexstartaddress = ExpandIPv6(String.Join(":", startip))
+        Dim hexlastaddress = ExpandIPv6(String.Join(":", endip))
 
         Return (hexstartaddress, hexlastaddress)
     End Function

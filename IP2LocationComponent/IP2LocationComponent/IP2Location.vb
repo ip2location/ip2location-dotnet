@@ -24,7 +24,6 @@ Imports System.Net
 Imports System.Text
 Imports System.Numerics
 Imports System.Text.RegularExpressions
-Imports System
 
 <Assembly: Runtime.InteropServices.ComVisible(False)>
 Public NotInheritable Class Component

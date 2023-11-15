@@ -40,7 +40,7 @@ Public Class IPResult
         Get
             Return m_ip
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_ip = Value
         End Set
     End Property
@@ -50,7 +50,7 @@ Public Class IPResult
         Get
             Return m_ipno
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_ipno = Value
         End Set
     End Property
@@ -60,7 +60,7 @@ Public Class IPResult
         Get
             Return m_countrySHORT
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_countrySHORT = Value
         End Set
     End Property
@@ -70,7 +70,7 @@ Public Class IPResult
         Get
             Return m_countryLONG
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_countryLONG = Value
         End Set
     End Property
@@ -80,7 +80,7 @@ Public Class IPResult
         Get
             Return m_region
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_region = Value
         End Set
     End Property
@@ -90,7 +90,7 @@ Public Class IPResult
         Get
             Return m_city
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_city = Value
         End Set
     End Property
@@ -100,7 +100,7 @@ Public Class IPResult
         Get
             Return m_latitude
         End Get
-        Set(ByVal Value As Single)
+        Set(Value As Single)
             m_latitude = Value
         End Set
     End Property
@@ -110,7 +110,7 @@ Public Class IPResult
         Get
             Return m_longitude
         End Get
-        Set(ByVal Value As Single)
+        Set(Value As Single)
             m_longitude = Value
         End Set
     End Property
@@ -120,7 +120,7 @@ Public Class IPResult
         Get
             Return m_zipcode
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_zipcode = Value
         End Set
     End Property
@@ -130,7 +130,7 @@ Public Class IPResult
         Get
             Return m_timezone
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_timezone = Value
         End Set
     End Property
@@ -140,7 +140,7 @@ Public Class IPResult
         Get
             Return m_netspeed
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_netspeed = Value
         End Set
     End Property
@@ -150,7 +150,7 @@ Public Class IPResult
         Get
             Return m_iddcode
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_iddcode = Value
         End Set
     End Property
@@ -160,7 +160,7 @@ Public Class IPResult
         Get
             Return m_areacode
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_areacode = Value
         End Set
     End Property
@@ -170,7 +170,7 @@ Public Class IPResult
         Get
             Return m_weatherstationcode
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_weatherstationcode = Value
         End Set
     End Property
@@ -180,7 +180,7 @@ Public Class IPResult
         Get
             Return m_weatherstationname
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_weatherstationname = Value
         End Set
     End Property
@@ -190,7 +190,7 @@ Public Class IPResult
         Get
             Return m_isp
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_isp = Value
         End Set
     End Property
@@ -200,7 +200,7 @@ Public Class IPResult
         Get
             Return m_domain
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_domain = Value
         End Set
     End Property
@@ -210,7 +210,7 @@ Public Class IPResult
         Get
             Return m_mcc
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_mcc = Value
         End Set
     End Property
@@ -220,7 +220,7 @@ Public Class IPResult
         Get
             Return m_mnc
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_mnc = Value
         End Set
     End Property
@@ -230,7 +230,7 @@ Public Class IPResult
         Get
             Return m_mobilebrand
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_mobilebrand = Value
         End Set
     End Property
@@ -240,7 +240,7 @@ Public Class IPResult
         Get
             Return m_elevation
         End Get
-        Set(ByVal Value As Single)
+        Set(Value As Single)
             m_elevation = Value
         End Set
     End Property
@@ -250,7 +250,7 @@ Public Class IPResult
         Get
             Return m_usagetype
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_usagetype = Value
         End Set
     End Property
@@ -260,7 +260,7 @@ Public Class IPResult
         Get
             Return m_addresstype
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_addresstype = Value
         End Set
     End Property
@@ -270,7 +270,7 @@ Public Class IPResult
         Get
             Return m_category
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_category = Value
         End Set
     End Property
@@ -280,7 +280,7 @@ Public Class IPResult
         Get
             Return m_district
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_district = Value
         End Set
     End Property
@@ -290,7 +290,7 @@ Public Class IPResult
         Get
             Return m_asn
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_asn = Value
         End Set
     End Property
@@ -300,7 +300,7 @@ Public Class IPResult
         Get
             Return m_as
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_as = Value
         End Set
     End Property
@@ -310,7 +310,7 @@ Public Class IPResult
         Get
             Return m_status
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_status = Value
         End Set
     End Property
