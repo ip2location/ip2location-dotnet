@@ -2,20 +2,64 @@
 
 ## Component Class
 
-```{py:function} Open(DBPath)
+```{py:function} Open(DBPath, UseMMF)
 Open and load the IP2Location BIN database for lookup.
 
 :param String DBPath: (Required) The file path links to IP2Location BIN databases.
+:param Boolean UseMMF: (Optional) Specify whether to use MemoryMappedFile then preload BIN file or not. Default is False.
 ```
 
-```{py:function} close()
+```{py:function} Open(DBStream)
+Initialize component with a stream that contains the BIN database then preload BIN file.
+
+:param String DBPath: (Required) A stream that contains the BIN database.
+```
+
+```{py:function} Close()
 Closes BIN file and resets metadata.
 ```
 
-```{py:function} IPQuery(myIPAddress)
+```{py:function} IPQuery(_IPAddress)
 Retrieve geolocation information for an IP address.
 
-:param String myIPAddress: (Required) The IP address (IPv4 or IPv6).
+:param String _IPAddress: (Required) The IP address (IPv4 or IPv6).
+:return: Returns the geolocation information. Refer below table for the fields avaliable.
+
+**RETURN FIELDS**
+
+| Field Name       | Description                                                  |
+| ---------------- | ------------------------------------------------------------ |
+| CountryShort    |     Two-character country code based on ISO 3166. |
+| CountryLong     |     Country name based on ISO 3166. |
+| Region           |     Region or state name. |
+| City             |     City name. |
+| InternetServiceProvider              |     Internet Service Provider or company\'s name. |
+| Latitude         |     City latitude. Defaults to capital city latitude if city is unknown. |
+| Longitude        |     City longitude. Defaults to capital city longitude if city is unknown. |
+| DomainName           |     Internet domain name associated with IP address range. |
+| ZipCode          |     ZIP code or Postal code. [172 countries supported](https://www.ip2location.com/zip-code-coverage). |
+| TimeZone         |     UTC time zone (with DST supported). |
+| NetSpeed         |     Internet connection type. |
+| IDDCode         |     The IDD prefix to call the city from another country. |
+| AreaCode        |     A varying length number assigned to geographic areas for calls between cities. [223 countries supported](https://www.ip2location.com/area-code-coverage). |
+| WeatherStationCode     |     The special code to identify the nearest weather observation station. |
+| WeatherStationName     |     The name of the nearest weather observation station. |
+| MCC              |     Mobile Country Codes (MCC) as defined in ITU E.212 for use in identifying mobile stations in wireless telephone networks, particularly GSM and UMTS networks. |
+| MNC              |     Mobile Network Code (MNC) is used in combination with a Mobile Country Code(MCC) to uniquely identify a mobile phone operator or carrier. |
+| MobileBrand     |     Commercial brand associated with the mobile carrier. You may click [mobile carrier coverage](https://www.ip2location.com/mobile-carrier-coverage) to view the coverage report. |
+| Elevation        |     Average height of city above sea level in meters (m). |
+| UsageType       |     Usage type classification of ISP or company. |
+| AddressType     |     IP address types as defined in Internet Protocol version 4 (IPv4) and Internet Protocol version 6 (IPv6). |
+| Category         |     The domain category based on [IAB Tech Lab Content Taxonomy](https://www.ip2location.com/free/iab-categories). |
+| District         |     District or county name. |
+| ASN              |     Autonomous system number (ASN). BIN databases. |
+| AS          |     Autonomous system (AS) name. |
+```
+
+```{py:function} IPQueryAsync(_IPAddress)
+Query IP address asynchronously.
+
+:param String _IPAddress: (Required) The IP address (IPv4 or IPv6).
 :return: Returns the geolocation information. Refer below table for the fields avaliable.
 
 **RETURN FIELDS**

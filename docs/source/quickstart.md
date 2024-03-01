@@ -77,6 +77,72 @@ End Try
 
 ```
 
+### Query geolocation information using a stream and async IP query
+
+You can query the geolocation information using a stream and async IP query as below:
+
+```vb.net
+Dim oIPResult As New IP2Location.IPResult
+Dim oIP2Location As New IP2Location.Component
+Try
+	Dim strIPAddress = "8.8.8.8"
+	If strIPAddress.Trim <> "" Then
+		Using myStream As New FileStream("C:\myfolder\IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ZIPCODE-TIMEZONE-ISP-DOMAIN-NETSPEED-AREACODE-WEATHER-MOBILE-ELEVATION-USAGETYPE-ADDRESSTYPE-CATEGORY-DISTRICT-ASN.BIN", FileMode.Open, FileAccess.Read, FileShare.Read)
+			oIP2Location.Open(myStream)
+			Dim myTask = oIP2Location.IPQueryAsync(strIPAddress)
+			oIPResult = myTask.Result
+			Select Case oIPResult.Status
+				Case "OK"
+					Console.WriteLine("IP Address: " & oIPResult.IPAddress)
+					Console.WriteLine("Country Code: " & oIPResult.CountryShort)
+					Console.WriteLine("Country Name: " & oIPResult.CountryLong)
+					Console.WriteLine("Region: " & oIPResult.Region)
+					Console.WriteLine("City: " & oIPResult.City)
+					Console.WriteLine("Latitude: " & oIPResult.Latitude)
+					Console.WriteLine("Longitude: " & oIPResult.Longitude)
+					Console.WriteLine("Postal Code: " & oIPResult.ZipCode)
+					Console.WriteLine("TimeZone: " & oIPResult.TimeZone)
+					Console.WriteLine("ISP Name: " & oIPResult.InternetServiceProvider)
+					Console.WriteLine("Domain Name: " & oIPResult.DomainName)
+					Console.WriteLine("NetSpeed: " & oIPResult.NetSpeed)
+					Console.WriteLine("IDD Code: " & oIPResult.IDDCode)
+					Console.WriteLine("Area Code: " & oIPResult.AreaCode)
+					Console.WriteLine("Weather Station Code: " & oIPResult.WeatherStationCode)
+					Console.WriteLine("Weather Station Name: " & oIPResult.WeatherStationName)
+					Console.WriteLine("MCC: " & oIPResult.MCC)
+					Console.WriteLine("MNC: " & oIPResult.MNC)
+					Console.WriteLine("Mobile Brand: " & oIPResult.MobileBrand)
+					Console.WriteLine("Elevation: " & oIPResult.Elevation)
+					Console.WriteLine("Usage Type: " & oIPResult.UsageType)
+					Console.WriteLine("Address Type: " & oIPResult.AddressType)
+					Console.WriteLine("Category: " & oIPResult.Category)
+					Console.WriteLine("District: " & oIPResult.District)
+					Console.WriteLine("ASN: " & oIPResult.ASN)
+					Console.WriteLine("AS: " & oIPResult.AS)
+				Case "EMPTY_IP_ADDRESS"
+					Console.WriteLine("IP Address cannot be blank.")
+				Case "INVALID_IP_ADDRESS"
+					Console.WriteLine("Invalid IP Address.")
+				Case "MISSING_FILE"
+					Console.WriteLine("Invalid Database Path.")
+				Case Else
+					Console.WriteLine(oIPResult.Status)
+			End Select
+		End Using
+	Else
+		Console.WriteLine("IP Address cannot be blank.")
+	End If
+Catch ex As Exception
+	Console.WriteLine(ex.Message)
+Finally
+	oIP2Location.Close()
+	oIPResult = Nothing
+	oIP2Location = Nothing
+End Try
+
+```
+
+
 ### Processing IP address using IP Tools class
 
 You can manupulate IP address, IP number and CIDR as below:
