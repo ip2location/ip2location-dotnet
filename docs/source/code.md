@@ -12,7 +12,7 @@ Open and load the IP2Location BIN database for lookup.
 ```{py:function} Open(DBStream)
 Initialize component with a stream that contains the BIN database then preload BIN file.
 
-:param String DBPath: (Required) A stream that contains the BIN database.
+:param Stream DBStream: (Required) A stream that contains the BIN database.
 ```
 
 ```{py:function} Close()
