@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <RootNamespace>IP2Location</RootNamespace>
-    <TargetFrameworks>netstandard2.0;net472;net48;net481;net5.0;net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net472;net48;net481;net5.0;net6.0;net7.0;net8.0</TargetFrameworks>
     <AssemblyName>IP2Location</AssemblyName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>IP2Location.IPGeolocation</PackageId>
-    <Version>9.0.1</Version>
+    <Version>9.0.2</Version>
     <Authors>IP2Location.com</Authors>
     <Company>IP2Location.com</Company>
     <Title>IP2Location Geolocation .NET Component</Title>
@@ -37,12 +37,12 @@
 This component works together with IP2Location BIN data file. You can download the free BIN data file at https://lite.ip2location.com or a commercial BIN data (high accuracy) at https://www.ip2location.com.
 
 As an alternative, you can also call the IP2Location Web Service using an API key. If you don't have an API key, you can subscribe for one at https://www.ip2location.com/web-service/ip2location to get started.</Description>
-    <Copyright>Copyright 2023 IP2Location.com</Copyright>
+    <Copyright>Copyright 2024 IP2Location.com</Copyright>
     <PackageProjectUrl>https://www.ip2location.com/development-libraries/ip2location/nuget</PackageProjectUrl>
     <PackageIcon>ipl-logo-square-128.png</PackageIcon>
     <PackageLicenseFile></PackageLicenseFile>
     <PackageTags>ip2location .net ip geolocation</PackageTags>
-    <PackageReleaseNotes>Fixed incorrect value returned by the CIDRToIPv6 function.</PackageReleaseNotes>
+    <PackageReleaseNotes>Update compatibility with .NET 8</PackageReleaseNotes>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>IP2LocationComponent.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
@@ -68,7 +68,7 @@ As an alternative, you can also call the IP2Location Web Service using an API ke
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CsvHelper" Version="30.0.1" />
+    <PackageReference Include="CsvHelper" Version="31.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
