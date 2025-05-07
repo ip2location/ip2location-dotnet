@@ -4,7 +4,7 @@
 
 Microsoft .NET 4.72 framework or later.
 Compatible with .NET Core 2.x/3.x SDK.
-Compatible with .NET 5/6/7/8.
+Compatible with .NET 5/6/7/8/9.
 
 ## Dependencies
 
