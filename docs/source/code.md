@@ -54,6 +54,9 @@ Retrieve geolocation information for an IP address.
 | District         |     District or county name. |
 | ASN              |     Autonomous system number (ASN). BIN databases. |
 | AS          |     Autonomous system (AS) name. |
+| ASDomain    | Domain name of the AS registrant. |
+| ASUsageType    | Usage type of the AS registrant. |
+| ASCIDR    | CIDR range for the whole AS. |
 ```
 
 ```{py:function} IPQueryAsync(_IPAddress)
@@ -91,6 +94,9 @@ Query IP address asynchronously.
 | District         |     District or county name. |
 | ASN              |     Autonomous system number (ASN). BIN databases. |
 | AS          |     Autonomous system (AS) name. |
+| ASDomain    | Domain name of the AS registrant. |
+| ASUsageType    | Usage type of the AS registrant. |
+| ASCIDR    | CIDR range for the whole AS. |
 ```
 
 ## IPTools Class

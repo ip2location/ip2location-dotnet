@@ -9,8 +9,8 @@ project = 'IP2Location .NET'
 copyright = '2025, IP2Location'
 author = 'IP2Location'
 
-release = '9.0.3'
-version = '9.0.3'
+release = '9.1.0'
+version = '9.1.0'
 
 # -- General configuration
 

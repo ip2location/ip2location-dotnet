@@ -33,6 +33,9 @@ Public Class IPResult
     Dim m_district As String = "?"
     Dim m_asn As String = "?"
     Dim m_as As String = "?"
+    Dim m_asdomain As String = "?"
+    Dim m_asusagetype As String = "?"
+    Dim m_ascidr As String = "?"
     Dim m_status As String = "?"
 
     ' Description: Get/Set the value of IPAddress
@@ -302,6 +305,36 @@ Public Class IPResult
         End Get
         Set(Value As String)
             m_as = Value
+        End Set
+    End Property
+
+    ' Description: Get/Set the value of AS domain
+    Public Property ASDomain() As String
+        Get
+            Return m_asdomain
+        End Get
+        Set(Value As String)
+            m_asdomain = Value
+        End Set
+    End Property
+
+    ' Description: Get/Set the value of AS usage type
+    Public Property ASUsageType() As String
+        Get
+            Return m_asusagetype
+        End Get
+        Set(Value As String)
+            m_asusagetype = Value
+        End Set
+    End Property
+
+    ' Description: Get/Set the value of AS CIDR
+    Public Property ASCIDR() As String
+        Get
+            Return m_ascidr
+        End Get
+        Set(Value As String)
+            m_ascidr = Value
         End Set
     End Property
 

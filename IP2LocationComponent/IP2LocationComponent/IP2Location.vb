@@ -92,6 +92,9 @@ Public NotInheritable Class Component
     Private ReadOnly DISTRICT_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 23}
     Private ReadOnly ASN_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24}
     Private ReadOnly AS_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 25}
+    Private ReadOnly ASDOMAIN_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26}
+    Private ReadOnly ASUSAGETYPE_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 27}
+    Private ReadOnly ASCIDR_POSITION() As Byte = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28}
 
     Private COUNTRY_POSITION_OFFSET As Integer = 0
     Private REGION_POSITION_OFFSET As Integer = 0
@@ -117,6 +120,9 @@ Public NotInheritable Class Component
     Private DISTRICT_POSITION_OFFSET As Integer = 0
     Private ASN_POSITION_OFFSET As Integer = 0
     Private AS_POSITION_OFFSET As Integer = 0
+    Private ASDOMAIN_POSITION_OFFSET As Integer = 0
+    Private ASUSAGETYPE_POSITION_OFFSET As Integer = 0
+    Private ASCIDR_POSITION_OFFSET As Integer = 0
 
     Private COUNTRY_ENABLED As Boolean = False
     Private REGION_ENABLED As Boolean = False
@@ -142,6 +148,9 @@ Public NotInheritable Class Component
     Private DISTRICT_ENABLED As Boolean = False
     Private ASN_ENABLED As Boolean = False
     Private AS_ENABLED As Boolean = False
+    Private ASDOMAIN_ENABLED As Boolean = False
+    Private ASUSAGETYPE_ENABLED As Boolean = False
+    Private ASCIDR_ENABLED As Boolean = False
 
     ' Description: Get or set the memory mapped file name
     Public Property MapFileName() As String
@@ -354,6 +363,9 @@ Public NotInheritable Class Component
                 DISTRICT_POSITION_OFFSET = If(DISTRICT_POSITION(dbt) <> 0, (DISTRICT_POSITION(dbt) - 2) << 2, 0)
                 ASN_POSITION_OFFSET = If(ASN_POSITION(dbt) <> 0, (ASN_POSITION(dbt) - 2) << 2, 0)
                 AS_POSITION_OFFSET = If(AS_POSITION(dbt) <> 0, (AS_POSITION(dbt) - 2) << 2, 0)
+                ASDOMAIN_POSITION_OFFSET = If(ASDOMAIN_POSITION(dbt) <> 0, (ASDOMAIN_POSITION(dbt) - 2) << 2, 0)
+                ASUSAGETYPE_POSITION_OFFSET = If(ASUSAGETYPE_POSITION(dbt) <> 0, (ASUSAGETYPE_POSITION(dbt) - 2) << 2, 0)
+                ASCIDR_POSITION_OFFSET = If(ASCIDR_POSITION(dbt) <> 0, (ASCIDR_POSITION(dbt) - 2) << 2, 0)
 
                 COUNTRY_ENABLED = COUNTRY_POSITION(dbt) <> 0
                 REGION_ENABLED = REGION_POSITION(dbt) <> 0
@@ -379,6 +391,9 @@ Public NotInheritable Class Component
                 DISTRICT_ENABLED = DISTRICT_POSITION(dbt) <> 0
                 ASN_ENABLED = ASN_POSITION(dbt) <> 0
                 AS_ENABLED = AS_POSITION(dbt) <> 0
+                ASDOMAIN_ENABLED = ASDOMAIN_POSITION(dbt) <> 0
+                ASUSAGETYPE_ENABLED = ASUSAGETYPE_POSITION(dbt) <> 0
+                ASCIDR_ENABLED = ASCIDR_POSITION(dbt) <> 0
 
                 If .Indexed Then
                     Dim readLen = _IndexArrayIPv4.GetLength(0)
@@ -597,6 +612,9 @@ Public NotInheritable Class Component
                     Dim district As String = MSG_NOT_SUPPORTED
                     Dim asn As String = MSG_NOT_SUPPORTED
                     Dim [as] As String = MSG_NOT_SUPPORTED
+                    Dim asdomain As String = MSG_NOT_SUPPORTED
+                    Dim asusagetype As String = MSG_NOT_SUPPORTED
+                    Dim ascidr As String = MSG_NOT_SUPPORTED
 
                     Dim rowLen = myColumnSize - firstCol
 
@@ -681,6 +699,15 @@ Public NotInheritable Class Component
                     If AS_ENABLED Then
                         [as] = ReadStr(Read32FromRow(row, AS_POSITION_OFFSET), myStream)
                     End If
+                    If ASDOMAIN_ENABLED Then
+                        asdomain = ReadStr(Read32FromRow(row, ASDOMAIN_POSITION_OFFSET), myStream)
+                    End If
+                    If ASUSAGETYPE_ENABLED Then
+                        asusagetype = ReadStr(Read32FromRow(row, ASUSAGETYPE_POSITION_OFFSET), myStream)
+                    End If
+                    If ASCIDR_ENABLED Then
+                        ascidr = ReadStr(Read32FromRow(row, ASCIDR_POSITION_OFFSET), myStream)
+                    End If
 
                     obj.IPAddress = myIPAddress
                     obj.IPNumber = ipnum.ToString()
@@ -709,6 +736,9 @@ Public NotInheritable Class Component
                     obj.District = district
                     obj.ASN = asn
                     obj.AS = [as]
+                    obj.ASDomain = asdomain
+                    obj.ASUsageType = asusagetype
+                    obj.ASCIDR = ascidr
                     obj.Status = MSG_OK
 
                     Return obj
@@ -883,6 +913,9 @@ Public NotInheritable Class Component
                     Dim district As String = MSG_NOT_SUPPORTED
                     Dim asn As String = MSG_NOT_SUPPORTED
                     Dim [as] As String = MSG_NOT_SUPPORTED
+                    Dim asdomain As String = MSG_NOT_SUPPORTED
+                    Dim asusagetype As String = MSG_NOT_SUPPORTED
+                    Dim ascidr As String = MSG_NOT_SUPPORTED
 
                     Dim rowLen = myColumnSize - firstCol
 
@@ -967,6 +1000,15 @@ Public NotInheritable Class Component
                     If AS_ENABLED Then
                         [as] = Await ReadStrAsync(Read32FromRow(row, AS_POSITION_OFFSET), myRef)
                     End If
+                    If ASDOMAIN_ENABLED Then
+                        asdomain = Await ReadStrAsync(Read32FromRow(row, ASDOMAIN_POSITION_OFFSET), myRef)
+                    End If
+                    If ASUSAGETYPE_ENABLED Then
+                        asusagetype = Await ReadStrAsync(Read32FromRow(row, ASUSAGETYPE_POSITION_OFFSET), myRef)
+                    End If
+                    If ASCIDR_ENABLED Then
+                        ascidr = Await ReadStrAsync(Read32FromRow(row, ASCIDR_POSITION_OFFSET), myRef)
+                    End If
 
                     obj.IPAddress = myIPAddress
                     obj.IPNumber = ipnum.ToString()
@@ -995,6 +1037,9 @@ Public NotInheritable Class Component
                     obj.District = district
                     obj.ASN = asn
                     obj.AS = [as]
+                    obj.ASDomain = asdomain
+                    obj.ASUsageType = asusagetype
+                    obj.ASCIDR = ascidr
                     obj.Status = MSG_OK
 
                     Return obj

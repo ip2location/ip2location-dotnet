@@ -57,6 +57,9 @@ Try
 				Console.WriteLine("District: " & oIPResult.District)
 				Console.WriteLine("ASN: " & oIPResult.ASN)
 				Console.WriteLine("AS: " & oIPResult.AS)
+				Console.WriteLine("AS Domain: " & oIPResult.ASDomain)
+				Console.WriteLine("AS Usage Type: " & oIPResult.ASUsageType)
+				Console.WriteLine("AS CIDR: " & oIPResult.ASCIDR)
 			Case "EMPTY_IP_ADDRESS"
 				Console.WriteLine("IP Address cannot be blank.")
 			Case "INVALID_IP_ADDRESS"
@@ -119,6 +122,9 @@ Try
 					Console.WriteLine("District: " & oIPResult.District)
 					Console.WriteLine("ASN: " & oIPResult.ASN)
 					Console.WriteLine("AS: " & oIPResult.AS)
+					Console.WriteLine("AS Domain: " & oIPResult.ASDomain)
+					Console.WriteLine("AS Usage Type: " & oIPResult.ASUsageType)
+					Console.WriteLine("AS CIDR: " & oIPResult.ASCIDR)
 				Case "EMPTY_IP_ADDRESS"
 					Console.WriteLine("IP Address cannot be blank.")
 				Case "INVALID_IP_ADDRESS"
