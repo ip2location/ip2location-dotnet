@@ -8,6 +8,8 @@ This IP Geolocation .NET component allows user to query an IP address for useful
 * Free IP2Location IP Geolocation BIN Data: https://lite.ip2location.com
 * Commercial IP2Location IP Geolocation BIN Data: https://www.ip2location.com/database/ip2location
 
+The component is thread-safe.
+
 ## Developer Documentation
 
 To learn more about installation, usage, and code examples, please visit the developer documentation at [https://ip2location-dotnet.readthedocs.io/en/latest/index.html.](https://ip2location-dotnet.readthedocs.io/en/latest/index.html)
